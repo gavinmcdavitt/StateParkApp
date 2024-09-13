@@ -1,3 +1,15 @@
+
+## To start an application:
+```
+Git clone git@github.com:gavinmcdavitt/StateParkApp.git
+npm install 
+npm start
+```
+
+
+
+
+### Average React Explanation
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
