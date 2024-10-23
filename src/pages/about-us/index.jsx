@@ -3,9 +3,11 @@ export const AboutUs = () => {
        <h1>
 About us:
         </h1>
+        <div class ="Names">
         <h2>Gavin McDavitt</h2>
         <h2>Marshall Brady</h2>
         <h2>Conner Murphy</h2>
+        </div>
         <p>
             The point of this program is to solve a problem, that I have been having while enjoying my 
             favorite state parks. You drive hours to get to a spring at a state park in florida. You see a long line
