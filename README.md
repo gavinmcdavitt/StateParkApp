@@ -2,6 +2,7 @@
 ## To start an application:
 ```
 Git clone git@github.com:gavinmcdavitt/StateParkApp.git
+cd StateParkApp
 npm install 
 npm start
 ```
