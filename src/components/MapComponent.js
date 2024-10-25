@@ -56,7 +56,7 @@ export const MapComponent = () => {
         });
 
             //first let's make a call to grab the data.
-    fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=zjD7pWi4Qx50dKxL2DBrslUCq9gqSzPVQNhPgSXn',{
+    fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=10&api_key=zjD7pWi4Qx50dKxL2DBrslUCq9gqSzPVQNhPgSXn',{
         method : 'GET',
         headers:{
             'Content-Type': 'application/json',
