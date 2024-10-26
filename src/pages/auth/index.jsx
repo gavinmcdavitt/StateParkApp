@@ -1,5 +1,6 @@
 import {auth, provider} from "../../config/firebase-config" 
 import {signInWithPopup} from "firebase/auth"
+import "./index.css"
 export const Auth = () =>{
     const signInWithGoogle = async() =>{
         const result = await signInWithPopup(auth, provider);
