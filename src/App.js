@@ -4,6 +4,9 @@ import {Home} from './pages/home/index';
 import { AboutUs } from './pages/about-us';
 import {AuthPage} from './pages/sign-up';
 import {MapComponent} from './components/MapComponent';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 //import { Map } from './pages/map';
 function App() {
   return (
