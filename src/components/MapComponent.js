@@ -103,7 +103,6 @@ export const MapComponent = () => {
                 mapRef.current = null;
             }
         };
- main
     }, []);
 
     return <div id="map" style={{ height: '800px', width: '100%' }}></div>;
