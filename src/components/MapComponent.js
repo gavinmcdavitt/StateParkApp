@@ -64,6 +64,7 @@ export const MapComponent = () => {
             alert('Location access denied.');
         });
 
+
             //first let's make a call to grab the data.
     fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=SZXsJ6bjFFiCX3uhCGG7RueLkdhbA9wUPscascne',{
         method : 'GET',
@@ -102,6 +103,7 @@ export const MapComponent = () => {
                 mapRef.current = null;
             }
         };
+ main
     }, []);
 
     return <div id="map" style={{ height: '800px', width: '100%' }}></div>;
