@@ -7,11 +7,15 @@ export const Auth = () =>{
         console.log(result);
     };
     return ( 
-        <div className="login-page">
+        
+        <div>
             <p>Sign in with Google to continue</p>
             <button className="login-with-google-btn" onClick = {signInWithGoogle}>
                   {" "} Sign in with Google
              </button>
+             
+             <button onClick={() => window.location.href = '/'}>Return to Home</button>
         </div>
+        
     );
 };

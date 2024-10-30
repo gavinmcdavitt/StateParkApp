@@ -2,14 +2,17 @@ import './index.css';
 
 export const AboutUs = () => {
     return (
-        <header className="app-header">
-
+        <><div class="navbar">
+            <img src="/Arrowhead.png" alt="Logo" className="navbar-logo" />
+            <a href="/">Home</a>
+            <a class="active" href="#about-us">About</a>
+            <a href="map">Map</a>
+            <a href="sign-up">Sign Up</a>
+        </div><header className="app-header">
         <div className="about-us-container">
             <h1>About Us</h1>
             <div className="names">
-                <h2>Gavin McDavitt</h2>
-                <h2>Marshall Brady</h2>
-                <h2>Conner Murphy</h2>
+                <h2>Gavin McDavitt, Marshall Brady, Conner Murphy</h2>
             </div>
             <p>
                 The purpose of this app is to address a challenge I often face while enjoying my favorite state parks.
@@ -19,6 +22,6 @@ export const AboutUs = () => {
                 a solution you’d find helpful, then this app is made for you!
             </p>
         </div>
-        </header>
-    );
+        <button onClick={() => window.location.href = '/'}>Return to Home</button>
+    </header></>);
 };

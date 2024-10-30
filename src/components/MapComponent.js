@@ -13,6 +13,15 @@ const customIcon = L.icon({
     shadowAnchor: [4, 62],
     popupAnchor:  [-3, -76]
 });
+const PersonalIcon = L.icon({
+    iconUrl: 'leaf-green.png', // Replace with the path to your custom icon
+    shadowUrl: 'leaf-shadow.png',
+    iconSize:     [38, 95],
+    shadowSize:   [50, 64],
+    iconAnchor:   [22, 94],
+    shadowAnchor: [4, 62],
+    popupAnchor:  [-3, -76]
+});
 export const MapComponent = () => {
     const mapRef = useRef(null); // Create a ref to store the map instance
      // Function to add a marker to the map
@@ -46,7 +55,7 @@ export const MapComponent = () => {
         // When location is found, add a marker
         mapRef.current.on('locationfound', (e) => {
             const userLocation = e.latlng;
-            L.marker(userLocation, { icon: customIcon } ).addTo(mapRef.current)
+            L.marker(userLocation, { icon: PersonalIcon } ).addTo(mapRef.current)
               .bindPopup('You are here!').openPopup();
         });
 
@@ -56,7 +65,7 @@ export const MapComponent = () => {
         });
 
             //first let's make a call to grab the data.
-    fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=10&api_key=zjD7pWi4Qx50dKxL2DBrslUCq9gqSzPVQNhPgSXn',{
+    fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=SZXsJ6bjFFiCX3uhCGG7RueLkdhbA9wUPscascne',{
         method : 'GET',
         headers:{
             'Content-Type': 'application/json',
@@ -75,6 +84,8 @@ export const MapComponent = () => {
                 // Log the latitude and longitude for each park
                 console.log(`Park: ${park.fullName}, Latitude: ${latitude}, Longitude: ${longitude}`);
                 addMarker(latitude, longitude, park.fullName);
+
+                //
             });
         } else {
             console.error('No park data found in the response.');
@@ -93,7 +104,11 @@ export const MapComponent = () => {
         };
     }, []);
 
-    return <div id="map" style={{ height: '600px', width: '100%' }}></div>;
+    return <div id="map" style={{ height: '800px', width: '100%' }}></div>;
+    
+    
+
+    
 };
 
 
