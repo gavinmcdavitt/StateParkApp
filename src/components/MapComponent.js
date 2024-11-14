@@ -16,8 +16,8 @@ const customIcon = L.icon({
 const PersonalIcon = L.icon({
     iconUrl: 'leaf-green.png', // Replace with the path to your custom icon
     shadowUrl: 'leaf-shadow.png',
-    iconSize:     [38, 95],
-    shadowSize:   [50, 64],
+    iconSize:     [29, 71],
+    shadowSize:   [38, 48],
     iconAnchor:   [22, 94],
     shadowAnchor: [4, 62],
     popupAnchor:  [-3, -76]
@@ -34,8 +34,6 @@ export const MapComponent = () => {
         }
     };
 
-    
-
     useEffect(() => {
         if (mapRef.current !== null) {
             // If map instance already exists, don't initialize again
@@ -45,12 +43,23 @@ export const MapComponent = () => {
         mapRef.current = L.map('map').setView([51.505, -0.09], 13);
 
         // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(mapRef.current);
 
+        // //This looks like apple maps.
+        // L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        //     attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+        //     maxZoom: 18,
+        // }).addTo(mapRef.current);
+
+        L.tileLayer('https://earthdata.nasa.gov/earthdata/datasets/black-marble', {
+            attribution: '&copy; <a href="https://earthobservatory.nasa.gov/global-maps/VIIRS_DNB_TrueColor">NASA</a>',
+            maxZoom: 8, // Adjust this based on the available zoom levels for the layer
+        }).addTo(mapRef.current);
+
         // Locate the user
-        mapRef.current.locate({ setView: true, maxZoom: 16 });
+        mapRef.current.locate({ setView: true, maxZoom: 18 });
 
         // When location is found, add a marker
         mapRef.current.on('locationfound', (e) => {
