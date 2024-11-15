@@ -16,8 +16,6 @@ function App() {
           <Route path="/About-Us" exact element={<AboutUs />} />
           <Route path="/Sign-Up" exact element={<AuthPage />} />
           <Route path="/Map" exact element={<MapComponent />} />
-          <Route path="/Add" exact element={<AddToDatabase />} />
-          <Route path="/Add-Data" exact element={<Homer/>} />
         </Routes>
       </Router>
     </div>
