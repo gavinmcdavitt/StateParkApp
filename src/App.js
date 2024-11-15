@@ -6,6 +6,7 @@ import { AuthPage } from './pages/sign-up';
 import { MapComponent } from './components/MapComponent';
 import { AddToDatabase } from './pages/addToDatabase'; 
 import {Homer} from './components/addObject';
+
 function App() {
   return (
     <div className="App">
