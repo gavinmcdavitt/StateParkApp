@@ -1,0 +1,134 @@
+
+.App {
+  text-align: center;
+}
+
+.small-logo {
+  width: 200px;
+  height: auto;
+  margin-bottom: 2rem;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #222;
+  padding: 0 16px;
+  overflow: hidden;
+}
+
+.navbar-logo {
+  width: 40px; /* Adjust size as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 16px; /* Space between logo and links */
+}
+
+.navbar a {
+  color: #f9f9f9;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar a:hover {
+  background-color: #555;
+  color: #fff;
+}
+
+.navbar a.active {
+  background-color: #15793e;
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .navbar a {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+  }
+}
+
+
+
+.App-header {
+  background: 
+  url('treeline.png'),
+    linear-gradient(135deg, #081f02, #3a6b35);
+  background-size: 100%, 100%; 
+  background-position: center bottom, center bottom;
+  background-repeat: no-repeat, no-repeat; 
+  min-height: 150vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #f9d3b4
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+h1 {
+  font-size: 3rem;
+  letter-spacing: 0.9px;
+  background: linear-gradient(
+    90deg,
+    #f9d3b4 0%,
+    rgba(218, 198, 181, 0.466) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: fit-content;
+}
+
+.search {
+  width: 71%;
+  margin: 4rem 0 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem 1.75rem;
+  border-radius: 3rem;
+  background: #1f2123;
+  -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+  box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
+}
+
+.search input {
+  flex: 1;
+  border: none;
+  font-size: 1.5rem;
+  font-family: var(--font-raleway);
+  font-weight: 500;
+  padding-right: 1rem;
+
+  outline: none;
+  color: #a1a1a1;
+  background: #1f2123;
+}
+
+.search img {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+
+
+
+
+ 

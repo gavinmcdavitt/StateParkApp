@@ -2,11 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Home } from './pages/home/index';
 import { AboutUs } from './pages/about-us';
-import { AuthPage } from './pages/sign-up';
-import { MapComponent } from './components/MapComponent';
-import { AddToDatabase } from './pages/addToDatabase'; 
-import {Homer} from './components/addObject';
+import {AuthPage} from './pages/sign-up';
+import {MapComponent} from './components/MapComponent';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+//import { Map } from './pages/map';
 function App() {
   return (
     <div className="App">
