@@ -147,10 +147,6 @@ export const MapComponent = () => {
             }
         };
     }, []);
-    return <div id="map" style={{ height: '800px', width: '100%' }}></div>;
-
-};
-
 
     return (
         <div style={{ position: 'relative' }}>
@@ -174,6 +170,6 @@ export const MapComponent = () => {
           </div>
         </div>
       );
+    
     };
-
 export default MapComponent;
