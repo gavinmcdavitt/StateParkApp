@@ -13,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" exact element={<Home />} />
+          <Route path="/Home" exact element={<Home />} />
           <Route path="/About-Us" exact element={<AboutUs />} />
           <Route path="/Sign-Up" exact element={<AuthPage />} />
           <Route path="/Map" exact element={<MapComponent />} />
