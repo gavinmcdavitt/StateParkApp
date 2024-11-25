@@ -41,27 +41,54 @@ export const MapComponent = () => {
     const mapRef = useRef(null); // Ref to store the map instance
    // const listOfMarkers= [];
 
-    const addMarkerStatePark = (latitude, longitude, popupText = '') => {
-        console.log('Adding state park marker at', latitude, longitude);  // Log to check if this function is called
-        if (mapRef.current) {
-            const marker = L.marker([latitude,longitude ], { icon: stateParkIcon }).addTo(mapRef.current);
-            if (popupText) {
-                marker.bindPopup(popupText);
-            }
-        //istOfMarkers.add(marker);
-        }
-    };
     // Function to add a marker to the map with specified icon and popup
-    const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
-        console.log('Adding marker at', latitude, longitude);  // Log to check coordinates
-        if (mapRef.current) {
-            const marker = L.marker([latitude, longitude], { icon }).addTo(mapRef.current);
-            if (popupText) {
-                marker.bindPopup(popupText);
-            }
+const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
+    console.log('Adding marker at', latitude, longitude); // Log to check coordinates
+    if (mapRef.current) {
+        const marker = L.marker([latitude, longitude], { icon }).addTo(mapRef.current);
+        if (popupText) {
+            const popupContent = `
+                <div>
+                    <p>${popupText}</p>
+                    <button onclick="window.location.href='/reservation';" style="
+                        padding: 5px 10px; 
+                        background-color: #007bff; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 4px; 
+                        cursor: pointer;">
+                        Go to Reservation
+                    </button>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
         }
-    };
-     // Function to handle slider value change
+    }
+};
+
+const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
+    console.log('Adding state park marker at', latitude, longitude); // Log to check if this function is called
+    if (mapRef.current) {
+        const marker = L.marker([latitude, longitude], { icon: stateParkIcon }).addTo(mapRef.current);
+        if (popupText) {
+            const popupContent = `
+                <div>
+                    <p>${popupText}</p>
+                    <button onclick="window.location.href='/reservation?parkId=${id}';" style="
+                        padding: 5px 10px; 
+                        background-color: #007bff; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 4px; 
+                        cursor: pointer;">
+                        Go to Reservation
+                    </button>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+        }
+    }
+};     // Function to handle slider value change
   const handleSliderChange = (event) => {
     setSliderValue(event.target.value);
     console.log('Slider value changed:', event.target.value); // Log value change'
@@ -98,7 +125,7 @@ export const MapComponent = () => {
                 console.log('Latitude:', obj.latitude, 'Longitude:', obj.longitude);  // Log each lat/long
                 if (obj.latitude && obj.longitude) {
 
-                    addMarkerStatePark(obj.latitude, obj.longitude, `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`);
+                    addMarkerStatePark(obj.latitude, obj.longitude, `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`, obj.id);
                 }
             });
         });

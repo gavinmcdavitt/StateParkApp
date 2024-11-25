@@ -5,6 +5,7 @@ import { AboutUs } from './pages/about-us';
 import {AuthPage} from './pages/sign-up';
 import {MapComponent} from './components/MapComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {ReservationForm} from './pages/reservation';
 
 //import { Map } from './pages/map';
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/About-Us" exact element={<AboutUs />} />
           <Route path="/Sign-Up" exact element={<AuthPage />} />
           <Route path="/Map" exact element={<MapComponent />} />
+          <Route path="/Reservation" exact element={<ReservationForm />} />
         </Routes>
       </Router>
     </div>
