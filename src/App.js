@@ -6,17 +6,26 @@ import { AuthPage } from './pages/sign-up';
 import { MapComponent } from './components/MapComponent';
 import { AddToDatabase } from './pages/addToDatabase'; 
 import {Homer} from './components/addObject';
+import {AuthedRoute} from './components/AuthedRoute';
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
           <Route path="/" exact element={<Home />} />
+          <Route path="/Home" exact element={<Home />} />
           <Route path="/About-Us" exact element={<AboutUs />} />
           <Route path="/Sign-Up" exact element={<AuthPage />} />
           <Route path="/Map" exact element={<MapComponent />} />
           <Route path="/Add" exact element={<AddToDatabase />} />
-          <Route path="/Add-Data" exact element={<Homer/>} />
+          <Route
+            path="/Add-Data"
+            element={
+              <AuthedRoute adminRoute={true}>
+                <Homer /> {/* The component you want to protect */}
+              </AuthedRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>

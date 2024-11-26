@@ -1,5 +1,6 @@
 import React from 'react';
-import {EmailSignIn, GoogleSignIn} from '../../components/authComponets';
+import {EmailSignIn} from '../../components/authComponets';
+import {GoogleSignIn} from '../../components/authComponets';
 export const AuthPage = () => {
     return (
       <div>
