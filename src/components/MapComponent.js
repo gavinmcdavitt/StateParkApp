@@ -129,12 +129,6 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
                 }
             });
         });
-        
-
-
-        
-
-
             //first let's make a call to grab the data.
     fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=${process.env.REACT_APP_NATIONAL_PARK}`,{
         method : 'GET',
@@ -163,9 +157,6 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
         }
     })
     .catch(error => console.error('Error:', error));  // Handle errors
-
-
-
         // Cleanup on unmount: remove the map instance
         return () => {
             if (mapRef.current !== null) {
