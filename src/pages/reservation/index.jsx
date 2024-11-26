@@ -35,6 +35,12 @@ export const ReservationForm = () => {
         e.preventDefault();
         try {
             const dateKey = formData.startDateTime.split('T')[0]; // Extract the date part of the startDateTime (e.g., '2024-11-25')
+            const currentDateTime = new Date();
+
+        // Check if the reservation date is in the past
+        if (dateKey < currentDateTime) {
+            throw new Error('The reservation date has already passed.');
+        } 
             const reservationRef = ref(database, `reservations/${dateKey}`);
 
             // Save the reservation under the date

@@ -136,7 +136,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
 
 
             //first let's make a call to grab the data.
-    fetch('https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=SZXsJ6bjFFiCX3uhCGG7RueLkdhbA9wUPscascne',{
+    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=${process.env.REACT_APP_NATIONAL_PARK}`,{
         method : 'GET',
         headers:{
             'Content-Type': 'application/json',
