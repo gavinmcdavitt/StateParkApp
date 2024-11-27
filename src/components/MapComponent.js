@@ -1,5 +1,6 @@
 // // src/MapComponent.js
 import React, { useEffect, useRef, useState} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getObjects } from '../components/readDatabase'; // Adjust path as needed
@@ -39,6 +40,11 @@ const personalIcon = L.icon({
 export const MapComponent = () => {
     const [sliderValue, setSliderValue] = useState(50);
     const mapRef = useRef(null); // Ref to store the map instance
+    const [searchParams] = useSearchParams();
+    const lat = parseFloat(searchParams.get('lat')) || null; // Default to 0 if not provided
+    const lon = parseFloat(searchParams.get('lon')) || null;
+
+
    // const listOfMarkers= [];
 
     // Function to add a marker to the map with specified icon and popup
@@ -67,7 +73,8 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
 };
 
 const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
-    console.log('Adding state park marker at', latitude, longitude); // Log to check if this function is called
+    
+    console.log('Adding state park marker at', latitude, longitude, popupText); // Log to check if this function is called
     if (mapRef.current) {
         const marker = L.marker([latitude, longitude], { icon: stateParkIcon }).addTo(mapRef.current);
         if (popupText) {
@@ -94,77 +101,87 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
     console.log('Slider value changed:', event.target.value); // Log value change'
   };
 
-    useEffect(() => {
-        if (mapRef.current) return; // Prevent map reinitialization
+  useEffect(() => {
+    if (mapRef.current) return; // Prevent map reinitialization
 
-        // Initialize the map and set the ref to the map instance
-        mapRef.current = L.map('map').setView([51.505, -0.09], 13);
+    // Initialize the map and set the ref to the map instance
+    const initialLat = lat || 51.505; // Default latitude
+    const initialLon = lon || -0.09; // Default longitude
+    const initialZoom = lat && lon ? 12 : 13; // Zoom closer if lat/lon is provided
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(mapRef.current);
+    mapRef.current = L.map('map').setView([initialLat, initialLon], initialZoom);
 
-        // Locate the user
-        mapRef.current.locate({ setView: true, maxZoom: 18 });
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(mapRef.current);
 
-        // When location is found, add a marker
-        mapRef.current.on('locationfound', (e) => {
-            addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', personalIcon);
-        });
+    // Add a marker at the specified lat/lon from the URL
+    if (lat && lon) {
+        addMarker(lat, lon, 'Specified Location');
+    }
+    else{
+        console.log('lat and long: ', lat, lon);
+    }
 
-        // Handle location errors
-        mapRef.current.on('locationerror', () => {
-            alert('Location access denied.');
-        });
+    // Handle location events
+    mapRef.current.on('locationfound', (e) => {
+        addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', personalIcon);
+    });
 
-        // Fetch objects with latitude and longitude
-        getObjects((objects) => {
-            console.log('Fetched objects:', objects);  // Check if the data has latitude and longitude
-            objects.forEach(obj => {
-                console.log('Latitude:', obj.latitude, 'Longitude:', obj.longitude);  // Log each lat/long
-                if (obj.latitude && obj.longitude) {
+    mapRef.current.on('locationerror', () => {
+        alert('Location access denied.');
+    });
 
-                    addMarkerStatePark(obj.latitude, obj.longitude, `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`, obj.id);
-                }
-            });
-        });
-            //first let's make a call to grab the data.
-    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=${process.env.REACT_APP_NATIONAL_PARK}`,{
-        method : 'GET',
-        headers:{
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())  // Convert the response to JSON
-    .then(data => {
-        console.log('Received data:', JSON.stringify(data, null, 2));
-        
-        // Access the first item in the 'data' array
-        if (data.data && data.data.length > 0) {
-            data.data.forEach(park => {
-                const latitude = park.latitude; // Get latitude
-                const longitude = park.longitude; // Get longitude
+    mapRef.current.locate({ setView: !lat && !lon, maxZoom: 18 });
 
-                // Log the latitude and longitude for each park
-                console.log(`Park: ${park.fullName}, Latitude: ${latitude}, Longitude: ${longitude}`);
-                addMarker(latitude, longitude, park.fullName);
-
-                //
-            });
-        } else {
-            console.error('No park data found in the response.');
-        }
-    })
-    .catch(error => console.error('Error:', error));  // Handle errors
-        // Cleanup on unmount: remove the map instance
-        return () => {
-            if (mapRef.current !== null) {
-                mapRef.current.remove();
-                mapRef.current = null;
+    // Fetch and display markers for other objects and parks
+    getObjects((objects) => {
+        console.log('Fetched objects:', objects); // Check if the data has latitude and longitude
+        objects.forEach(obj => {
+            console.log('Latitude:', obj.latitude, 'Longitude:', obj.longitude); // Log each lat/long
+            if (obj.latitude && obj.longitude) {
+                addMarkerStatePark(
+                    obj.latitude,
+                    obj.longitude,
+                    `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
+                    obj.id
+                );
             }
-        };
-    }, []);
+        });
+    });
+
+    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=${process.env.REACT_APP_NATIONAL_PARK}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => response.json())
+        .then(data => {
+            //console.log('Received data:', JSON.stringify(data, null, 2));
+            if (data.data && data.data.length > 0) {
+                data.data.forEach(park => {
+                    const latitude = parseFloat(park.latitude);
+                    const longitude = parseFloat(park.longitude);
+                    if (latitude && longitude) {
+                        console.log(`Park: ${park.fullName}, Latitude: ${latitude}, Longitude: ${longitude}`);
+                        addMarker(latitude, longitude, park.fullName);
+                    }
+                });
+            } else {
+                console.error('No park data found in the response.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Cleanup on unmount: remove the map instance
+    return () => {
+        if (mapRef.current !== null) {
+            mapRef.current.remove();
+            mapRef.current = null;
+        }
+    };
+}, [lat, lon]);
+
 
     return (
         <div style={{ position: 'relative' }}>
