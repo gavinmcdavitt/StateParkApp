@@ -4,8 +4,6 @@
 Git clone git@github.com:gavinmcdavitt/StateParkApp.git
 cd StateParkApp
 npm install
-npm install react-bootstrap
-npm install bootstrap
 npm start
 ```
 
