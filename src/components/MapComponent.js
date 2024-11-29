@@ -1,10 +1,10 @@
 // // src/MapComponent.js
 import React, { useEffect, useRef, useState} from 'react';
 import { useSearchParams } from 'react-router-dom';
-import L from 'leaflet';
+import L, { circle } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getObjects } from '../components/readDatabase'; // Adjust path as needed
-import {Slider} from '../components/slider/rangeSlider';
+import Slider from '../components/slider/rangeSlider';
 
 // Define custom icons
 const customIcon = L.icon({
@@ -40,9 +40,14 @@ const personalIcon = L.icon({
 export const MapComponent = () => {
     const [sliderValue, setSliderValue] = useState(50);
     const mapRef = useRef(null); // Ref to store the map instance
+    const circleRef = useRef(null); // Ref to store the circle instance
     const [searchParams] = useSearchParams();
+    const [userLocation, setUserLocation] = useState(null);
     const lat = parseFloat(searchParams.get('lat')) || null; // Default to 0 if not provided
     const lon = parseFloat(searchParams.get('lon')) || null;
+
+    //log the values of lat and lon to see what is being passed
+    console.log('lat and lon:', lat, lon);
 
 
    // const listOfMarkers= [];
@@ -97,16 +102,23 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
     }
 };     // Function to handle slider value change
   const handleSliderChange = (event) => {
-    setSliderValue(event.target.value);
-    console.log('Slider value changed:', event.target.value); // Log value change'
+    const newValue = parseInt(event.target.value, 10);
+    console.log('Handling slider change, new value: ', newValue); // Log value change
+    setSliderValue(newValue);
+
+    if (circleRef.current) {
+      circleRef.current.setRadius(newValue * 1000); // Convert km to meters
+    }
+    console.log('Slider value changed:', event.target.value); // Log value change
   };
 
+  
   useEffect(() => {
     if (mapRef.current) return; // Prevent map reinitialization
 
     // Initialize the map and set the ref to the map instance
-    const initialLat = lat || 51.505; // Default latitude
-    const initialLon = lon || -0.09; // Default longitude
+    const initialLat = lat || 30.43; // Default latitude
+    const initialLon = lon || -84.28; // Default longitude
     const initialZoom = lat && lon ? 12 : 13; // Zoom closer if lat/lon is provided
 
     mapRef.current = L.map('map').setView([initialLat, initialLon], initialZoom);
@@ -114,6 +126,13 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
     // Add OpenStreetMap tiles
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(mapRef.current);
+
+    //Create and add a circle to the map
+    circleRef.current = L.circle([initialLat, initialLon], {
+        color: 'white',
+        fillOpacity: 0.2,
+        radius: sliderValue * 1000 //initial radius
     }).addTo(mapRef.current);
 
     // Add a marker at the specified lat/lon from the URL
@@ -125,10 +144,24 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
     }
 
     // Handle location events
+    //create a circle or update it
     mapRef.current.on('locationfound', (e) => {
-        addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', personalIcon);
+        if(!circleRef.current){
+            circleRef.current = L.circle(e.latlng, {
+                color: 'white',
+                fillOpacity: 0.2,
+                radius: sliderValue * 1000
+            }).addTo(mapRef.current);
+        }
+        else{
+            circleRef.current.setLatLng(e.latlng);
+            //circleRef.current.setRadius(sliderValue * 1000);
+        }
+    setUserLocation(e.latlng);
+    addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', personalIcon);
     });
 
+    
     mapRef.current.on('locationerror', () => {
         alert('Location access denied.');
     });
@@ -175,12 +208,19 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
 
     // Cleanup on unmount: remove the map instance
     return () => {
-        if (mapRef.current !== null) {
+        if (mapRef.current) {
             mapRef.current.remove();
             mapRef.current = null;
         }
     };
-}, [lat, lon]);
+}, []); // Empty dependency array to run only once
+
+    useEffect(() => {
+        //update cicle radius when slider value changes
+        if (circleRef.current) {
+            circleRef.current.setRadius(sliderValue * 1000);
+        }
+    }, [sliderValue]);
 
 
     return (
@@ -191,8 +231,8 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
           {/* Slider container with absolute positioning to appear on top of the map */}
           <div style={{
             position: 'absolute', 
-            top: '20px', 
-            left: '20px', 
+            top: '10px', 
+            left: '50px', 
             zIndex: 1000, 
             backgroundColor: 'white', 
             padding: '10px', 
