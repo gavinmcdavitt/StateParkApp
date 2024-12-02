@@ -1,47 +1,66 @@
 import React, { useEffect, useState } from 'react';
-import { database } from '../config/firebase-config'; // Adjust the path as needed
+import { database } from '../config/firebase-config';
 import { ref, get } from 'firebase/database';
-import { Navigate } from 'react-router-dom';  // Use Navigate instead of Redirect
+import { Navigate } from 'react-router-dom';
+import { auth } from '../config/firebase-config';
 
-export const AuthedRoute = ({ adminRoute = false, children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+export const AuthedRoute = ({ children }) => {
+  const [isAdmin, setIsAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);  // This will hold the current user data
 
   useEffect(() => {
-    const userId = "email";
-    const userRef = ref(database, 'users/' + userId);
+    const checkAdminRole = async () => {
+      setLoading(true);
 
-    get(userRef).then(snapshot => {
-      const userData = snapshot.val();
+      try {
+        const user = auth.currentUser;
 
-      if (userData) {
-        setIsAuthenticated(true);
-        setIsAdmin(userData.role == 'admin'); // Assuming the role is stored under "role" in Firebase
-        setUser(userData);
-      } else {
-        setIsAuthenticated(false);
+        if (user) {
+          // Use user.uid instead of user.email
+          const userRef = ref(database, `users/${user.uid}`);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            setIsAdmin(userData.role === "admin");
+          } else {
+            console.warn("User data not found in database.");
+            setIsAdmin(false);
+          }
+        } else {
+          console.warn("No authenticated user.");
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        setIsAdmin(false);
       }
+
       setLoading(false);
-    }).catch(error => {
-      console.error("Error fetching user data:", error);
-      setLoading(false);
-      setIsAuthenticated(false);
-    });
+    };
+
+    // Check if a user is already signed in when the component mounts
+    if (auth.currentUser) {
+      checkAdminRole();
+    } else {
+      // Listen for auth state changes
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          checkAdminRole();
+        } else {
+          setIsAdmin(false);
+          setLoading(false);
+        }
+      });
+
+      // Cleanup subscription
+      return () => unsubscribe();
+    }
   }, []);
 
-  // Handle loading state
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
-  // Redirect if the user is not authenticated or doesn't have the required role for adminRoute
-  if (!isAuthenticated || (adminRoute && !isAdmin)) {
-    return <Navigate to="/Home" />; // Use Navigate for redirect
-  }
-
-  return <>{children}</>;
+  return isAdmin ? children : <Navigate to="/" />;
 };
 
 export default AuthedRoute;

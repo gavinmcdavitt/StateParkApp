@@ -4,6 +4,9 @@ import { ref, set } from 'firebase/database';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'; 
 import { database } from '../config/firebase-config';
+import { signOut } from 'firebase/auth';
+
+
 
 export const EmailSignIn = () => {
     const [email, setEmail] = useState("");
@@ -11,11 +14,19 @@ export const EmailSignIn = () => {
     const [isSignUp, setIsSignUp] = useState(true);  // To toggle between sign-up and sign-in mode
     const navigate = useNavigate();
 
+
     const handleSignInOrSignUp = async () => {
         try {
-            // Set persistence to local so that the user stays logged in across pages
-            await setPersistence(auth, browserLocalPersistence);
 
+            setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+            // Persistence is now set up
+        })
+        .catch((error) => {
+        console.error("Error setting persistence", error);
+        });
+            
+           
             if (isSignUp) {
                 // Sign up new user
                 await createUserWithEmailAndPassword(auth, email, password)
@@ -26,8 +37,9 @@ export const EmailSignIn = () => {
                         // Add user to Realtime Database under the 'users' node
                         set(ref(database, 'users/' + user.uid), {
                             email: user.email,
-                            password: password,
+                            uid: user.uid,
                             role: 'user',
+                            registerAt: new Date().toISOString(),
                         }).then(() => {
                             console.log("User data saved to the database!");
                             navigate('/Home'); // Redirect after saving to database
@@ -78,14 +90,48 @@ export const EmailSignIn = () => {
         </div>
     );
 };
+export const LogoutButton = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            console.log("User logged out successfully");
+            // Redirect to login page after logout
+            navigate('/');
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
+
+    return (
+        <button 
+            onClick={handleLogout} 
+            className="logout-button"
+        >
+            Logout
+        </button>
+    );
+};
+
+export default LogoutButton;
 
 export const GoogleSignIn = () => {
     const navigate = useNavigate();
 
+    
+
     const signInWithGoogle = async () => {
         try {
-            // Set persistence to local so that the user stays logged in across pages
-            await setPersistence(auth, browserLocalPersistence);
+
+            setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+            // Persistence is now set up
+        })
+        .catch((error) => {
+        console.error("Error setting persistence", error);
+        });
+
 
             const result = await signInWithPopup(auth, provider);
             const user = result.user;

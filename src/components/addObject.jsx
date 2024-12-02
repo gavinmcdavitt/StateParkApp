@@ -104,6 +104,7 @@ export const Homer = () => {
                 <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} />
             </div>
             <button onClick={handleSubmit}>Submit</button>
+            <button onClick={() => window.history.back()}>Back</button>
         </div>
     );
 };
