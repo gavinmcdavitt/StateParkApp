@@ -14,8 +14,12 @@
   align-items: center;
   justify-content: space-between;
   background-color: #222;
+  position: fixed;
+  top: 0;
+  width: 100%;
   padding: 0 16px;
   overflow: hidden;
+  
 }
 
 .navbar-logo {
@@ -31,6 +35,7 @@
   text-decoration: none;
   font-size: 18px;
   transition: background-color 0.3s, color 0.3s;
+  
 }
 
 .navbar a:hover {
@@ -48,6 +53,7 @@
     flex-direction: column;
     align-items: flex-start;
     padding: 0;
+    
   }
 
   .navbar a {
@@ -126,6 +132,25 @@ h1 {
   height: 35px;
   cursor: pointer;
 }
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+.popup h3 {
+    margin-top: 0;
+}
+.popup button {
+    margin-top: 10px;
+}
+
 
 
 

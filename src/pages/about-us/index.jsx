@@ -1,6 +1,13 @@
 import './index.css';
+import { useState } from 'react';
+import { UserInfoPopUp } from '../../components/UserPopUp/UserInfoPopUp';
 
 export const AboutUs = () => {
+    const [popupVisible, setPopupVisible] = useState(false);
+
+    const togglePopup = () => {
+        setPopupVisible((prev) => !prev);
+    };
     return (
         <><div class="navbar">
             <img src="/Arrowhead.png" alt="Logo" className="navbar-logo" />
@@ -8,6 +15,14 @@ export const AboutUs = () => {
             <a class="active" href="#about-us">About</a>
             <a href="map">Map</a>
             <a href="sign-up">Sign Up</a>
+            <img
+                    src="/profile.png"
+                    alt="Profile"
+                    className="navbar-logo"
+                    onClick={togglePopup}
+                    style={{ cursor: 'pointer' }}
+                />
+
         </div><header className="app-header">
         <div className="about-us-container">
             <h1>About Us</h1>
@@ -23,5 +38,7 @@ export const AboutUs = () => {
             </p>
         </div>
         <button onClick={() => window.location.href = '/'}>Return to Home</button>
-    </header></>);
+    </header>
+    <UserInfoPopUp isVisible={popupVisible} onClose={togglePopup} />
+    </>);
 };

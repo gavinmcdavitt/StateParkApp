@@ -5,6 +5,7 @@ import { getObjects } from '../components/readDatabase';
 import { Button } from 'react-bootstrap';
 
 const ReservationButton = ({ onClick }) => {
+    
     return (
         <Button 
             onClick={onClick} 
@@ -51,6 +52,7 @@ export const CreatedComboBox = () => {
         //go to reservation with the id already in put.
         window.location.href = `/reservation?parkId=${object.id}`
     };
+    
 
     return (
         <div style={{ marginTop: '60px' }}>
@@ -79,7 +81,26 @@ export const CreatedComboBox = () => {
                     </div>
                 )}
                 renderInput={(params) =>
-                    <TextField {...params} label="Search Objects" variant="outlined" />
+                    <TextField 
+                        {...params} 
+                        label="Search Objects" 
+                        variant="outlined"
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                backgroundColor: "white",
+                                color: "black",
+                            },
+                            "& .MuiInputLabel-root": {
+                                color: "black",
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "black",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "black",
+                            },
+                        }}
+                    />
                 }
             />
         </div>

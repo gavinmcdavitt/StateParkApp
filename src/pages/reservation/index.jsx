@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {database} from '../../config/firebase-config'// Import your Firebase database reference
 import { useLocation } from 'react-router-dom';
 import { ref, set } from 'firebase/database';
+import './index.css';
+import { Margin } from '@mui/icons-material';
 
 export const ReservationForm = () => {
     const [formData, setFormData] = useState({
@@ -122,7 +124,9 @@ export const ReservationForm = () => {
                 />
             </div>
 
-            <button type="submit">Submit Reservation</button>
+            <button type="submit" style={{ marginBottom: '10px' }}>Submit Reservation</button>
+
+            <button type="submit" onClick={() => window.location.href = '/Home'}>Cancel</button>
         </form>
     );
 };

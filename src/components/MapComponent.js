@@ -225,10 +225,9 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
 
     return (
         <div style={{ position: 'relative' }}>
-          {/* Map container */}
-          <div id="map" style={{ height: '600px', width: '100%' }}></div>
-    
-          {/* Slider container with absolute positioning to appear on top of the map */}
+                  <div id="map" style={{ height: '100vh', width: '100%' }}></div>
+            
+                  {/* Slider container with absolute positioning to appear on top of the map */}
           <div style={{
             position: 'absolute', 
             top: '10px', 
@@ -243,6 +242,27 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
               onChange={handleSliderChange} // Add event listener to log changes
             />
           </div>
+        {/* Back button container with absolute positioning to appear on top of the map */}
+        <div style={{
+            position: 'absolute', 
+            bottom: '20px', 
+            left: '20px', 
+            zIndex: 1000, 
+            backgroundColor: 'white', 
+            padding: '10px', 
+            borderRadius: '8px'
+        }}>
+            <button onClick={() => window.history.back()} style={{
+                padding: '5px 10px', 
+                backgroundColor: '#007bff', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: '4px', 
+                cursor: 'pointer'
+            }}>
+                Back
+            </button>
+        </div>
         </div>
       );
     

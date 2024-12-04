@@ -2,8 +2,17 @@ import React from 'react';
 import './index.css';
 import Carousel from 'react-bootstrap/Carousel';
 import { CreatedComboBox} from '../../components/comboBox' 
+import { useState } from 'react';
+import { UserInfoPopUp } from '../../components/UserPopUp/UserInfoPopUp';
+
 
 export const Home = () => {
+    const [popupVisible, setPopupVisible] = useState(false);
+
+    const togglePopup = () => {
+        setPopupVisible((prev) => !prev);
+    };
+
     return (
         <>
             <div className="navbar">
@@ -12,6 +21,13 @@ export const Home = () => {
                 <a href="about-us">About</a>
                 <a href="map">Map</a>
                 <a href="sign-up">Sign Up</a>
+                <img
+                    src="/profile.png"
+                    alt="Profile"
+                    className="navbar-logo"
+                    onClick={togglePopup}
+                    style={{ cursor: 'pointer' }}
+                />
             </div>
             <header className="App-header">
                 <h1>Welcome to Our Park Finder</h1>
@@ -36,6 +52,8 @@ export const Home = () => {
                 </Carousel>
                 <CreatedComboBox />
             </header>
+            <UserInfoPopUp isVisible={popupVisible} onClose={togglePopup} />
+
         </>
     );
 };
