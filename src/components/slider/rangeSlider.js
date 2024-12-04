@@ -12,7 +12,7 @@ export const Slider = ({value, onChange}) => {
     <div className="slidecontainer">
       <input
         type="range"
-        min="10"
+        min="1"
         max="1000"
         value={value}
         className="slider"
