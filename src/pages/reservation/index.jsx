@@ -3,8 +3,8 @@ import {database} from '../../config/firebase-config'// Import your Firebase dat
 import { useLocation } from 'react-router-dom';
 import { ref, set } from 'firebase/database';
 import './index.css';
-import { Margin } from '@mui/icons-material';
-
+//import {addCapacityToAllObjects, ensureBooleanField} from '../../components/addObject';
+import {updateCurrentCapacity} from '../../components/readDatabase';
 export const ReservationForm = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -13,20 +13,36 @@ export const ReservationForm = () => {
         startDateTime: '',
         guests: 1,
         parkId: '',
+        parkName:'',
     });
 
     const location = useLocation();
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const parkId = queryParams.get('parkId');
-        if (parkId) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                parkId,
-            }));
-        }
+        const queryString = location.search.substring(1); // Remove the leading '?'
+        const params = queryString.split('?'); // Split at the first '?'
+    
+        let parkId = null;
+        let parkName = null;
+    
+        // Extract `parkId` and `parkName` manually
+        params.forEach(param => {
+            if (param.startsWith('parkId=')) {
+                parkId = param.split('=')[1];
+            } else if (param.startsWith('parkName=')) {
+                parkName = decodeURIComponent(param.split('=')[1]);
+            }
+        });
+    
+        // Update formData with the extracted values
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            ...(parkId && { parkId }),
+            ...(parkName && { parkName }),
+        }));
     }, [location]);
+    
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -50,7 +66,11 @@ export const ReservationForm = () => {
 
             alert('Reservation saved successfully!');
             console.log('Saved reservation:', formData);
-            window.location.href = '/map';
+            console.log(formData.parkId);
+            
+            updateCurrentCapacity(formData.parkName, formData.guests);
+           // window.location.href = '/map';
+
         } catch (error) {
             console.error('Error saving reservation:', error);
             alert('Failed to save reservation.');
@@ -59,6 +79,16 @@ export const ReservationForm = () => {
 
     return (
         <form onSubmit={handleSubmit}>
+
+            <div>
+                <label>Park name:</label>
+                <input
+                    type="text"
+                    name="parkName"
+                    value={formData.parkName}
+                    readOnly
+                />
+            </div>
             <div>
                 <label>Full Name:</label>
                 <input
@@ -114,20 +144,12 @@ export const ReservationForm = () => {
                 />
             </div>
 
-            <div>
-                <label>Park ID:</label>
-                <input
-                    type="text"
-                    name="parkId"
-                    value={formData.parkId}
-                    readOnly
-                />
-            </div>
-
             <button type="submit" style={{ marginBottom: '10px' }}>Submit Reservation</button>
-
+            
             <button type="submit" onClick={() => window.location.href = '/Home'}>Cancel</button>
+          
         </form>
+        
     );
 };
 

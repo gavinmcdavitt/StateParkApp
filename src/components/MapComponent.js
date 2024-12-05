@@ -102,7 +102,7 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
     }
 };
 
-const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
+const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name ='') => {
     
     console.log('Adding state park marker at', latitude, longitude, popupText); // Log to check if this function is called
     if (mapRef.current) {
@@ -111,7 +111,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
             const popupContent = `
                 <div>
                     <p>${popupText}</p>
-                    <button onclick="window.location.href='/reservation?parkId=${id}';" style="
+                    <button onclick="window.location.href='/reservation?parkId=${id}?parkName=${name}';" style="
                         padding: 5px 10px; 
                         background-color: #007bff; 
                         color: white; 
@@ -207,7 +207,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '') => {
                     obj.latitude,
                     obj.longitude,
                     `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
-                    obj.id
+                    obj.id, obj.name
                 );
             }
         });

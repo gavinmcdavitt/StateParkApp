@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReservationForm } from './pages/reservation';
 import { MyReservationPage } from './pages/my-reservation';
 
-
 function App() {
   return (
     <div className="App">
