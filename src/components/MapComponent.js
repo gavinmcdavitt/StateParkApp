@@ -224,7 +224,11 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
                     addMarkerStatePark(
                         obj.latitude,
                         obj.longitude,
-                        `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
+                        `<strong>${obj.name}</strong>
+                        <br/>County: ${obj.county}
+                        <br />Size: ${obj.size}
+                        <br/> Current Capacity ${obj.currentCapacity}
+                        <br/>Capacity: ${obj.capacity}`,
                         obj.id, obj.name, icon
                     );
                 }
@@ -234,7 +238,11 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
                     addMarkerStatePark(
                         obj.latitude,
                         obj.longitude,
-                        `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
+                        `<strong>${obj.name}</strong>
+                        <br/>County: ${obj.county}
+                        <br />Size: ${obj.size}
+                        <br/> Current Capacity ${obj.currentCapacity}
+                        <br/>Capacity: ${obj.capacity}`,
                         obj.id, obj.name, icon
                     );
                 }
