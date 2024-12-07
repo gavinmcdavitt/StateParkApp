@@ -96,7 +96,7 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
 const handleReservation = (object) => {
     console.log('Reservation made for:', object);
     //go to reservation with the id already in put.
-    window.location.href = `/reservation?parkId=${object.id}`
+    window.location.href = `/reservation?parkId=${object.id}?parkName=${object.name}`
 };
 const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name ='', icon) => {
     
@@ -191,7 +191,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
         alert('Location access denied.');
     });
 
-    mapRef.current.locate({ setView: !lat && !lon, maxZoom: 18 });
+   mapRef.current.locate({ setView: lat && lon, maxZoom: 18, minZoom: 13 });
 
     // Fetch and display markers for other objects and parks
     getObjects((objects) => {
