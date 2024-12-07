@@ -21,6 +21,7 @@ export const Slider = ({value, onChange}) => {
       />
       <p id="demo">{value}</p> {/* Display the current value */}
     </div>
+    
   );
 };
 

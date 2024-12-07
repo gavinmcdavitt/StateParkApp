@@ -8,20 +8,11 @@ import 'leaflet/dist/leaflet.css';
 import { getObjects } from '../components/readDatabase'; // Adjust path as needed
 import Slider from '../components/slider/rangeSlider';
 import { get } from 'firebase/database';
+import {closedPark, halwayOpenPark, openPark} from '../components/icons';
 
 // Define custom icons
 const customIcon = L.icon({
     iconUrl: 'leaf-red.png', // Replace with the correct path to your custom icon
-    shadowUrl: 'leaf-shadow.png',
-    iconSize: [38, 95],
-    shadowSize: [50, 64],
-    iconAnchor: [22, 94],
-    shadowAnchor: [4, 62],
-    popupAnchor: [-3, -76]
-});
-
-const stateParkIcon = L.icon({
-    iconUrl: 'leaf-orange.png', // Replace with the correct path to your custom icon
     shadowUrl: 'leaf-shadow.png',
     iconSize: [38, 95],
     shadowSize: [50, 64],
@@ -50,6 +41,7 @@ export const MapComponent = () => {
     const lon = parseFloat(searchParams.get('lon')) || null;
     const [parks, setParks] = useState([]);
     const[filteredParks, setFilteredParks] = useState([]);
+    const [isParkListVisible, setIsParkListVisible] = useState(false);
 
     //log the values of lat and lon to see what is being passed
     console.log('lat and lon:', lat, lon);
@@ -101,12 +93,16 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
         }
     }
 };
-
-const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name ='') => {
+const handleReservation = (object) => {
+    console.log('Reservation made for:', object);
+    //go to reservation with the id already in put.
+    window.location.href = `/reservation?parkId=${object.id}`
+};
+const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name ='', icon) => {
     
     console.log('Adding state park marker at', latitude, longitude, popupText); // Log to check if this function is called
     if (mapRef.current) {
-        const marker = L.marker([latitude, longitude], { icon: stateParkIcon }).addTo(mapRef.current);
+        const marker = L.marker([latitude, longitude], { icon: icon }).addTo(mapRef.current);
         if (popupText) {
             const popupContent = `
                 <div>
@@ -148,7 +144,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
     // Initialize the map and set the ref to the map instance
     const initialLat = lat || 30.43; // Default latitude
     const initialLon = lon || -84.28; // Default longitude
-    const initialZoom = lat && lon ? 12 : 13; // Zoom closer if lat/lon is provided
+    const initialZoom = lat && lon ? 13 : 14; // Zoom closer if lat/lon is provided
 
     mapRef.current = L.map('map').setView([initialLat, initialLon], initialZoom);
 
@@ -203,17 +199,50 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
         objects.forEach(obj => {
             console.log('Latitude:', obj.latitude, 'Longitude:', obj.longitude); // Log each lat/long
             if (obj.latitude && obj.longitude) {
-                addMarkerStatePark(
-                    obj.latitude,
-                    obj.longitude,
-                    `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
-                    obj.id, obj.name
-                );
+                const ratio = parseFloat((obj.currentCapacity / obj.capacity).toFixed(2));
+                console.log('name + raitio',  obj.name, ratio);
+                let icon =openPark;
+                if(ratio < 0.5)
+                {
+                    //green
+                    icon = closedPark;
+                    addMarkerStatePark(
+                        obj.latitude,
+                        obj.longitude,
+                        `<strong>${obj.name}</strong>
+                        <br/>County: ${obj.county}
+                        <br />Size: ${obj.size}
+                        <br/> Current Capacity ${obj.currentCapacity}
+                        <br/>Capacity: ${obj.capacity}`,
+                        obj.id, obj.name, icon
+                    );
+                }
+                if(0.5 < ratio < 0.6)
+                {
+                    //yelllow
+                    icon = halwayOpenPark;
+                    addMarkerStatePark(
+                        obj.latitude,
+                        obj.longitude,
+                        `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
+                        obj.id, obj.name, icon
+                    );
+                }
+                if(0.6< ratio)
+                {
+                    icon = closedPark;
+                    addMarkerStatePark(
+                        obj.latitude,
+                        obj.longitude,
+                        `<strong>${obj.name}</strong><br />County: ${obj.county}<br />Size: ${obj.size}`,
+                        obj.id, obj.name, icon
+                    );
+                }
             }
         });
     });
 
-    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=100&api_key=${process.env.REACT_APP_NATIONAL_PARK}`, {
+    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=1&api_key=${process.env.REACT_APP_NATIONAL_PARK}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -312,36 +341,96 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
                   <div id="map" style={{ height: '100vh', width: '100%' }}></div>
             
                   {/* Slider container with absolute positioning to appear on top of the map */}
-          <div style={{
-            position: 'absolute', 
-            top: '10px', 
-            right: '10px', 
-            zIndex: 1000, 
-            backgroundColor: 'white', 
-            padding: '10px', 
-            borderRadius: '8px'
-          }}>
-            <h4>Parks within Radius ({sliderValue} miles):</h4>
-            <ul>
-                {filteredParks.map(park => (
-                    <li key={park.id}>{park.name} - {Math.round(park.distance / 1609.34)} miles away</li>
-                ))}
-            </ul>
-            </div>
-            <div style={{
+                 {/* Toggle Button */}
+<button 
+  onClick={() => setIsParkListVisible(!isParkListVisible)} 
+  style={{
+    position: 'absolute',
+    bottom: '20px', // Fixed position at the bottom of the screen
+    right: '20px', // Align to the right of the screen
+    zIndex: 9990, // Ensure it's above other elements
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)', // Optional shadow for visibility
+  }}
+>
+  {isParkListVisible ? 'Hide Parks' : 'Show Parks'}
+</button>
+
+<div 
+  style={{
+    position: 'absolute',
+    top: '0', 
+    right: isParkListVisible ? '0' : '-300px', // Hide off-screen and slide in
+    width: '300px', // Set the width of the sliding panel
+    height: '100%', // Full height
+    zIndex: 1000,
+    backgroundColor: 'white',
+    padding: '10px',
+    borderRadius: '8px 0 0 8px', // Rounded edge on the left
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Optional shadow for better visibility
+    transition: 'right 0.3s ease-in-out' // Smooth slide effect
+  }}
+>
+
+<div style={{
+    maxHeight: 'calc(100% - 50px)', // Adjustable height cap
+    overflowY: 'auto', // Adds vertical scrolling
+    paddingRight: '10px', // Optional padding for scrollbar clearance
+  }}>
+  <h4>Parks within Radius ({sliderValue} miles):</h4>
+  <ul>
+    {filteredParks.map(park => (
+      <li key={park.id}>
+        <button 
+            onClick={() => handleReservation(park)} 
+            style={{
+              padding: '5px 5px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginLeft: '10px'
+            }}
+          >
+            <img 
+                src="reservation.png" 
+                alt="Icon" 
+                
+                style={{ width: '20px', height: '20px' }} 
+            />
+          </button>
+          <span style={{ fontSize: '14px' }}>{park.name} - {Math.round(park.distance / 1609.34)} mi.</span>
+      </li>
+    ))}
+  </ul>
+  </div>
+</div>
+
+  <div style={{
                 position: 'absolute',
                 top: '10px',
                 left: '50px',
                 zIndex: 1000,
                 backgroundColor: 'white',
-                padding: '10px',
+                padding: '0px',
                 borderRadius: '8px'
             }}>
 
             <Slider 
               value={sliderValue} 
               onChange={handleSliderChange} // Add event listener to log changes
-            />
+              style={{
+                width: '150px', // Adjust width to take less space
+                color: '#007bff', // Modern blue accent color
+                margin: '10px 0', // Compact spacing
+                padding: '0', // Remove extra padding
+              }}/>
           </div>
         {/* Back button container with absolute positioning to appear on top of the map */}
         <div style={{
