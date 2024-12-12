@@ -1,6 +1,83 @@
 import React, { useState } from 'react';
-import { ref, set } from "firebase/database";
+import { ref, set, get, update } from "firebase/database";
 import { database } from '../config/firebase-config'; // Adjust the path as needed
+
+export const ensureBooleanField = async () => {
+    try {
+        const objectsRef = ref(database, 'objects/');
+        const snapshot = await get(objectsRef);
+
+        if (snapshot.exists()) {
+            const objects = snapshot.val();
+            const updates = {};
+
+            Object.keys(objects).forEach((key) => {
+                const object = objects[key];
+
+                // Ensure `isOpen` is a boolean
+                if (typeof object.isOpen !== "boolean") {
+                    updates[`objects/${key}/isOpen`] = false; // Default to false
+                }
+            });
+
+            if (Object.keys(updates).length > 0) {
+                await update(ref(database), updates);
+                console.log("Successfully ensured 'isOpen' field is a boolean for all objects.");
+            } else {
+                console.log("No updates needed. All objects already have a valid 'isOpen' field.");
+            }
+        } else {
+            console.log("No objects found in the database.");
+        }
+    } catch (error) {
+        console.error("Error ensuring 'isOpen' field:", error);
+    }
+};
+export const addCapacityToAllObjects = () => {
+    const objectsRef = ref(database, 'objects'); // Reference to the 'objects' node
+
+    get(objectsRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const objects = snapshot.val(); // Get all objects from the database
+
+                // Iterate through each object and add the 'capacity' field
+                const updates = {};
+                Object.keys(objects).forEach((objectKey) => {
+                    const object = objects[objectKey];
+                    const randomNumber = Math.floor(Math.random() * 25) + 1;
+console.log(randomNumber);
+                    // If the 'capacity' field doesn't exist, add it with a default value of 0
+                    if (object.capacity === 0) {
+                        
+                        object.capacity = randomNumber; // Default value
+                    }
+                    if(typeof object.parkingCapcity =="number")
+                    {
+                        object.parkingCapcity =randomNumber;
+                    }
+                    if(typeof object.currentCapacity !=="number")
+                    {
+                        object.currentCapacity =0;
+                    }
+                    
+                    // Prepare update for each object
+                    updates[`objects/${objectKey}`] = object;
+                });
+
+                // Update the objects in the database
+                return update(ref(database), updates);
+            } else {
+                console.log("No objects found in the database.");
+            }
+        })
+        .then(() => {
+            console.log("Capacity field added to all objects successfully!");
+        })
+        .catch((error) => {
+            console.error("Error updating objects: ", error);
+        });
+};
 
 // Function to add an object
 export const addObj = (newObject) => {

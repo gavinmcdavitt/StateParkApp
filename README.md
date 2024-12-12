@@ -8,6 +8,7 @@ npm start
 ```
 
 
+![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
 
 
 ### Average React Explanation

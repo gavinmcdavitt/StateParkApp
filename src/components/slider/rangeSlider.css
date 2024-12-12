@@ -1,40 +1,56 @@
-/* Slider CSS */
 .slidecontainer {
-    width: 100%; /* Width of the outside container */
-  }
-  
-  /* The slider itself */
-  .slider {
-    -webkit-appearance: none; /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-  }
-  
-  /* Mouse-over effects */
-  .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-  }
-  
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-  
-  .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-  
+  width: 150px; /* Compact width */
+  display: flex;
+  flex-direction: column; /* Stack slider and label vertically */
+  align-items: center;
+  gap: 5px; /* Add space between slider and value display */
+}
+
+.slider {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  width: 100%; /* Use full width of the container */
+  height: 6px; /* Make slider thinner */
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: background 0.2s ease-in-out;
+}
+
+.slider:hover {
+  background: #ccc; /* Slightly darker background on hover */
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px; /* Thumb size */
+  height: 14px;
+  border-radius: 50%; /* Rounded thumb */
+  background: #007bff; /* Accent color */
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #0056b3; /* Darker color on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: #0056b3;
+}
+
+#demo {
+  font-size: 14px; /* Smaller font for value display */
+  color: #555; /* Neutral color */
+  margin: 0;
+}
