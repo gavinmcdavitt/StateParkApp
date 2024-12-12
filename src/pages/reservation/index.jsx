@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {database} from '../../config/firebase-config'// Import your Firebase database reference
+import { database } from '../../config/firebase-config';
 import { useLocation } from 'react-router-dom';
 import { ref, set } from 'firebase/database';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../config/firebase-config';
+import { updateCurrentCapacity } from '../../components/readDatabase';
 import './index.css';
-//import {addCapacityToAllObjects, ensureBooleanField} from '../../components/addObject';
-import {updateCurrentCapacity} from '../../components/readDatabase';
+
 export const ReservationForm = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -40,10 +42,21 @@ export const ReservationForm = () => {
             ...(parkId && { parkId }),
             ...(parkName && { parkName }),
         }));
+    } 
+    
+     const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    email: user.email || '', // Use email from authenticated user
+                }));
+            }
+        });
+
+        // Cleanup subscription when component unmounts
+        return () => unsubscribe();
     }, [location]);
     
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -154,3 +167,4 @@ export const ReservationForm = () => {
 };
 
 export default ReservationForm;
+
