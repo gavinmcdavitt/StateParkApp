@@ -21,6 +21,8 @@ export const Home = () => {
                 <a href="about-us">About</a>
                 <a href="map">Map</a>
                 <a href="sign-up">Sign Up</a>
+                <a href="reservation">Reservation</a>
+
                 <img
                     src="/profile.png"
                     alt="Profile"

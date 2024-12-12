@@ -83,7 +83,7 @@ export const CreatedComboBox = () => {
                 renderInput={(params) =>
                     <TextField 
                         {...params} 
-                        label="Search Objects" 
+                        label="Search State Parks" 
                         variant="outlined"
                         sx={{
                             "& .MuiInputBase-root": {

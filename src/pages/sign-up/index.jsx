@@ -17,6 +17,8 @@ export const AuthPage = () => {
             <a href="about-us">About</a>
             <a href="map">Map</a>
             <a class="active" href="#sign-up">Sign Up</a>\
+            <a href="reservation">Reservations</a>
+
             <img
                     src="/profile.png"
                     alt="Profile"

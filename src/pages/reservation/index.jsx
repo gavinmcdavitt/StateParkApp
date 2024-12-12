@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { ref, set } from 'firebase/database';
 import './index.css';
 import { Margin } from '@mui/icons-material';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../config/firebase-config';
 
 export const ReservationForm = () => {
     const [formData, setFormData] = useState({
@@ -26,7 +28,19 @@ export const ReservationForm = () => {
                 parkId,
             }));
         }
-    }, [location]);
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    email: user.email || '', // Use email from authenticated user
+                }));
+            }
+        });
+
+        // Cleanup subscription when component unmounts
+        return () => unsubscribe();
+    }, [location]); 
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -132,3 +146,4 @@ export const ReservationForm = () => {
 };
 
 export default ReservationForm;
+
