@@ -30,3 +30,11 @@ export const openPark = L.icon({
     shadowAnchor: [4, 62],
     popupAnchor: [-3, -76]
 });
+
+
+export const Personal = L.icon({
+    iconUrl: 'profile.png', // Replace with the correct path to your custom icon
+    iconSize: [45, 95],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76]
+});
