@@ -8,7 +8,8 @@ import 'leaflet/dist/leaflet.css';
 import { getObjects } from '../components/readDatabase'; // Adjust path as needed
 import Slider from '../components/slider/rangeSlider';
 import { get } from 'firebase/database';
-import {closedPark, halwayOpenPark, openPark} from '../components/icons';
+import {closedPark, halwayOpenPark, openPark,Personal} from '../components/icons';
+import { green } from '@mui/material/colors';
 
 // Define custom icons
 const customIcon = L.icon({
@@ -75,6 +76,16 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
     if (mapRef.current) {
         const marker = L.marker([latitude, longitude], { icon }).addTo(mapRef.current);
         if (popupText) {
+            if(icon === Personal)
+            {
+                const popupContent = `
+                <div>
+                    <p>${popupText}</p>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            }
+            else{
             const popupContent = `
                 <div>
                     <p>${popupText}</p>
@@ -90,6 +101,7 @@ const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
                 </div>
             `;
             marker.bindPopup(popupContent);
+            }
         }
     }
 };
@@ -183,7 +195,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
             //circleRef.current.setRadius(sliderValue * 1000);
         }
     setUserLocation(e.latlng);
-    addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', personalIcon);
+    addMarker(e.latlng.lat, e.latlng.lng, 'You are here!', Personal);
     });
 
     
@@ -201,11 +213,12 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
             if (obj.latitude && obj.longitude) {
                 const ratio = parseFloat((obj.currentCapacity / obj.capacity).toFixed(2));
                 console.log('name + raitio',  obj.name, ratio);
-                let icon =openPark;
-                if(ratio < 0.5)
+                let icon;
+                if(obj.capacity <= 15)
                 {
                     //green
-                    icon = closedPark;
+                    if( icon !== openPark)
+                        icon = openPark
                     addMarkerStatePark(
                         obj.latitude,
                         obj.longitude,
@@ -217,7 +230,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
                         obj.id, obj.name, icon
                     );
                 }
-                if(0.5 < ratio < 0.6)
+                if(15 < obj.capacity && obj.capacity <= 23)
                 {
                     //yelllow
                     icon = halwayOpenPark;
@@ -232,7 +245,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
                         obj.id, obj.name, icon
                     );
                 }
-                if(0.6< ratio)
+                if(24< obj.capacity)
                 {
                     icon = closedPark;
                     addMarkerStatePark(
@@ -250,7 +263,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
         });
     });
 
-    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=1&api_key=${process.env.REACT_APP_NATIONAL_PARK}`, {
+    fetch(`https://developer.nps.gov/api/v1/parks?stateCode=&limit=10000&api_key=${process.env.REACT_APP_NATIONAL_PARK}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
