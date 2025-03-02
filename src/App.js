@@ -17,11 +17,11 @@ function App() {
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/Home" exact element={<Home />} />
-          <Route path="/About-Us" exact element={<AboutUs />} />
-          <Route path="/Sign-Up" exact element={<AuthPage />} />
-          <Route path="/Map" exact element={<MapComponent />} />
-          <Route path="/Reservation" exact element={<ReservationForm />} />
-          <Route path="/My-Reservation" exact element={<MyReservationPage />} />
+          <Route path="/about-Us" exact element={<AboutUs />} />
+          <Route path="/sign-Up" exact element={<AuthPage />} />
+          <Route path="/map" exact element={<MapComponent />} />
+          <Route path="/reservation" exact element={<ReservationForm />} />
+          <Route path="/my-reservation" exact element={<MyReservationPage />} />
         </Routes>
       </Router>
     </div>
