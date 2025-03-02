@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/StateParkApp/static/css/main.6cf630fa.css",
+    "main.js": "/StateParkApp/static/js/main.ec9759c9.js",
+    "static/js/453.15ccb6fe.chunk.js": "/StateParkApp/static/js/453.15ccb6fe.chunk.js",
+    "static/media/treeline.png": "/StateParkApp/static/media/treeline.10e32ad23d6dad6382ae.png",
+    "index.html": "/StateParkApp/index.html",
+    "main.6cf630fa.css.map": "/StateParkApp/static/css/main.6cf630fa.css.map",
+    "main.ec9759c9.js.map": "/StateParkApp/static/js/main.ec9759c9.js.map",
+    "453.15ccb6fe.chunk.js.map": "/StateParkApp/static/js/453.15ccb6fe.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6cf630fa.css",
+    "static/js/main.ec9759c9.js"
+  ]
+}
