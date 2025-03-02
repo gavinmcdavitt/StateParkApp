@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { ZeroOutCapacityAndClose } from '../components/readDatabase';
 
 const ZeroDBScheduled = () => {
-  const scheduleFixDB = () => {
+  const scheduleFixDB = useCallback(() => {
     const now = new Date();
     const targetTime = new Date();
 
@@ -22,7 +22,7 @@ const ZeroDBScheduled = () => {
       ZeroOutCapacityAndClose(); // Call the function
       scheduleFixDB(); // Reschedule for the next day
     }, delay);
-  };
+  }, []); // Empty dependency array ensures this function doesn't change
 
   // Schedule the task when the component mounts
   useEffect(() => {
