@@ -13,7 +13,7 @@ function App() {
   ZeroDBScheduled();
   return (
     <div className="App">
-      <Router>
+      <Router basename="/StateParkApp">
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/Home" exact element={<Home />} />
