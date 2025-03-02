@@ -314,25 +314,6 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
             setParks(objects.filter(obj => obj.latitude && obj.longitude)); // Filter to ensure only objects with valid coordinates are used
         });
     }, []);
-
-
-    /*
-    const updateFilteredParks = useCallback(() => {
-        if (mapRef.current && circleRef.current) {
-            const center = circleRef.current.getLatLng();
-            const radius = sliderValue * 1609.34; // Convert km to meters
-            const newFilteredParks = parks.filter(park => {
-                const distance = getDistance(
-                    { latitude: center.lat, longitude: center.lng },
-                    { latitude: parseFloat(park.latitude), longitude: parseFloat(park.longitude) }
-                );
-                return distance <= radius;
-            });
-            setFilteredParks(newFilteredParks);
-        }
-    }, [parks, sliderValue]);
-    */
-
     const updateFilteredAndSortedParks = useCallback(() => {
         if (mapRef.current && circleRef.current) {
             const center = circleRef.current.getLatLng();

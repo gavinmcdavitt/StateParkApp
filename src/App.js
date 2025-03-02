@@ -8,8 +8,9 @@ import { MapComponent } from './components/MapComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReservationForm } from './pages/reservation';
 import { MyReservationPage } from './pages/my-reservation';
-
+import ZeroDBScheduled from './components/cleanDB';
 function App() {
+  ZeroDBScheduled();
   return (
     <div className="App">
       <Router>
