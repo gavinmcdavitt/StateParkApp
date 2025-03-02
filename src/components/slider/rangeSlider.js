@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './rangeSlider.css'; 
 
-export const Slider = ({value, onChange}) => {
-  const [sliderValue, setSliderValue] = useState(50); // Initialize with the default value
+export const Slider = ({ value, onChange }) => {
+  const [sliderValue, setSliderValue] = useState(value || 50); // Initialize with the default value or prop value
+
+  useEffect(() => {
+    // Update sliderValue when value prop changes
+    setSliderValue(value);
+  }, [value]);
 
   const handleSliderChange = (event) => {
-    setSliderValue(event.target.value); // Update slider value on change
+    setSliderValue(event.target.value); // Update local state
+    onChange(event.target.value); // Update the parent component with new value
   };
 
   return (
@@ -14,14 +20,13 @@ export const Slider = ({value, onChange}) => {
         type="range"
         min="1"
         max="1000"
-        value={value}
+        value={sliderValue} // Use sliderValue for the input value
         className="slider"
         id="myRange"
-        onChange={onChange}
+        onChange={handleSliderChange} // Update state on change
       />
-      <p id="demo">{value}</p> {/* Display the current value */}
+      <p id="demo">{sliderValue}</p> {/* Display the current value */}
     </div>
-    
   );
 };
 
