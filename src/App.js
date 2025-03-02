@@ -1,6 +1,6 @@
 import './App.css';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import { useState, useEffect } from 'react'; // Import React hooks
+//import { useState, useEffect } from 'react'; // Import React hooks
 import { Home } from './pages/home/index';
 import { AboutUs } from './pages/about-us';
 import { AuthPage } from './pages/sign-up';

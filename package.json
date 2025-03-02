@@ -3,6 +3,7 @@
   "name": "state_park_app",
   "version": "0.1.0",
   "private": true,
+
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
@@ -50,6 +51,9 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    
+    "gh-pages": "^6.3.0",
+    "@babel/plugin-proposal-private-property-in-object":"7.21.0"
   }
+  
 }
