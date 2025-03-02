@@ -3,6 +3,8 @@
   "name": "state_park_app",
   "version": "0.1.0",
   "private": true,
+
+
     "babel": {
   "plugins": [
     "@babel/plugin-proposal-private-property-in-object"
@@ -31,7 +33,7 @@
   "scripts": {
     "start": "react-scripts start",
     "predeploy" :"npm run build",
-                                                                              "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -57,5 +59,7 @@
   "devDependencies": {
     "gh-pages": "^6.3.0",
     "@babel/plugin-proposal-private-property-in-object":"^7.21.0"
+
   }
+  
 }

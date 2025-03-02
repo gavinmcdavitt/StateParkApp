@@ -8,6 +8,19 @@ export const MyReservationPage = () => {
   const [reservations, setReservations] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Tracks if the user is logged in
 
+  const fetchReservations = (emailToUse) => {
+    const emailToQuery = emailToUse || email;
+
+    if (emailToQuery.trim() === '') {
+      alert('Please enter an email address.');
+      return;
+    }
+
+    getReservationsByEmail(emailToQuery, (reservations) => {
+      setReservations(reservations); // Update state with reservations
+      console.log('Your reservations', reservations);
+    });
+  };
   useEffect(() => {
     // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -22,21 +35,8 @@ export const MyReservationPage = () => {
 
     // Cleanup subscription on component unmount
     return () => unsubscribe();
-  }, []);
+  }, [fetchReservations]);
 
-  const fetchReservations = (emailToUse) => {
-    const emailToQuery = emailToUse || email;
-
-    if (emailToQuery.trim() === '') {
-      alert('Please enter an email address.');
-      return;
-    }
-
-    getReservationsByEmail(emailToQuery, (reservations) => {
-      setReservations(reservations); // Update state with reservations
-      console.log('Your reservations', reservations);
-    });
-  };
 
   return (
     <>
