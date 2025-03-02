@@ -42,9 +42,10 @@ export const ZeroOutCapacityAndClose = (database, callback) => {
             
             Object.entries(data).forEach(([key, obj]) => {
                 const randomNumber = Math.floor(Math.random() * 5) + 1;
-
+                const zero = Math.floor(14);
                 // Here, the key is the name of the object, so we use it directly in the path
                 updates[`objects/${key}/currentCapacity`] = randomNumber;
+                console.log('db is now updated to zero');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
             });
 
             // Update the database with the transformed objects

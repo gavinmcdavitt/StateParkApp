@@ -23,6 +23,8 @@ export const Home = () => {
                 <a href="sign-up">Sign Up</a>
                 <a href="reservation">Reservation</a>
 
+                <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>67c395ecc814f06d21167283,67c395b8d28fd3c4ab5ded95</script>
+
                 <img
                     src="/profile.png"
                     alt="Profile"
