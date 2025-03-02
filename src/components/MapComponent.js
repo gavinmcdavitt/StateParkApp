@@ -1,15 +1,12 @@
 // // src/MapComponent.js
 import React, { useEffect, useRef, useState, useCallback} from 'react';
 import { getDistance } from 'geolib';
-import { filterParksWithinRadius } from '../geoUtils';
 import { useSearchParams } from 'react-router-dom';
-import L, { circle } from 'leaflet';
+import L  from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getObjects } from '../components/readDatabase'; // Adjust path as needed
 import Slider from '../components/slider/rangeSlider';
-import { get } from 'firebase/database';
 import {closedPark, halwayOpenPark, openPark,Personal} from '../components/icons';
-import { green } from '@mui/material/colors';
 
 // Define custom icons
 const customIcon = L.icon({
@@ -22,22 +19,12 @@ const customIcon = L.icon({
     popupAnchor: [-3, -76]
 });
 
-const personalIcon = L.icon({
-    iconUrl: 'leaf-green.png', // Replace with the correct path to your custom icon
-    shadowUrl: 'leaf-shadow.png',
-    iconSize: [29, 71],
-    shadowSize: [38, 48],
-    iconAnchor: [22, 94],
-    shadowAnchor: [4, 62],
-    popupAnchor: [-3, -76]
-});
-
 export const MapComponent = () => {
     const [sliderValue, setSliderValue] = useState(50);
     const mapRef = useRef(null); // Ref to store the map instance
     const circleRef = useRef(null); // Ref to store the circle instance
     const [searchParams] = useSearchParams();
-    const [userLocation, setUserLocation] = useState(null);
+    const [setUserLocation] = useState(null);
     const lat = parseFloat(searchParams.get('lat')) || null; // Default to 0 if not provided
     const lon = parseFloat(searchParams.get('lon')) || null;
     const [parks, setParks] = useState([]);
@@ -58,18 +45,6 @@ export const MapComponent = () => {
         //fetch park data and set it
     }, []);
    // const listOfMarkers= [];
-
-    const isWithinRadius = (park, center, radius) => {
-        const distance = getDistance(
-            {latitude: center.lat, longitude: center.lng},
-            {latitude: park.latitude, longitude: park.longitude}
-        );
-        return distance <= radius;
-    }
-
-    const filterParksWithinRadius = (parks, center, radius) => {
-        return parks.filter(park => isWithinRadius(park, center, radius));
-    }
     // Function to add a marker to the map with specified icon and popup
 const addMarker = (latitude, longitude, popupText = '', icon = customIcon) => {
     console.log('Adding marker at', latitude, longitude); // Log to check coordinates
@@ -293,7 +268,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
         }
     };
     //fetchParksData();
-}, []); // Empty dependency array to run only once
+}, [lat, lon, setUserLocation, sliderValue]); // Empty dependency array to run only once
 
 
     useEffect(() => {
@@ -307,7 +282,7 @@ const addMarkerStatePark = (latitude, longitude, popupText = '', id = '', name =
             ) <= sliderValue * 1609.34);
             setFilteredParks(newFilteredParks);
         }
-    }, [sliderValue]);
+    }, [sliderValue, parks]);
 
     useEffect(() => {
         getObjects(objects => {

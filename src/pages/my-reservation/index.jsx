@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getReservationsByEmail } from '../../components/readDatabase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../config/firebase-config';
@@ -8,7 +8,8 @@ export const MyReservationPage = () => {
   const [reservations, setReservations] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Tracks if the user is logged in
 
-  const fetchReservations = (emailToUse) => {
+  // Memoize the fetchReservations function to avoid unnecessary re-renders
+  const fetchReservations = useCallback((emailToUse) => {
     const emailToQuery = emailToUse || email;
 
     if (emailToQuery.trim() === '') {
@@ -20,7 +21,8 @@ export const MyReservationPage = () => {
       setReservations(reservations); // Update state with reservations
       console.log('Your reservations', reservations);
     });
-  };
+  }, [email]); // Dependency on email so it will update if the email changes
+
   useEffect(() => {
     // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -35,8 +37,7 @@ export const MyReservationPage = () => {
 
     // Cleanup subscription on component unmount
     return () => unsubscribe();
-  }, [fetchReservations]);
-
+  }, [fetchReservations]); // Only re-run if fetchReservations changes
 
   return (
     <>
