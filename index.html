@@ -1,1 +1,75 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/gavinmcdavitt.github.io/stateparkapp/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="/gavinmcdavitt.github.io/stateparkapp/logo192.png"/><link rel="manifest" href="/gavinmcdavitt.github.io/stateparkapp/manifest.json"/><title>React App</title><script defer="defer" src="/gavinmcdavitt.github.io/stateparkapp/static/js/main.e6b6b2d3.js"></script><link href="/gavinmcdavitt.github.io/stateparkapp/static/css/main.8bdb8599.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Component</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    #root {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React and ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Geolib for distance calculations -->
+  <script src="https://unpkg.com/geolib@3.3.3/dist/geolib.js"></script>
+
+  <script type="text/babel">
+    // Paste the entire MapComponent.js code here
+    const { useState, useRef, useEffect, useCallback } = React;
+
+    // Define custom icons
+    const customIcon = L.icon({
+      iconUrl: 'leaf-red.png', // Replace with the correct path to your custom icon
+      shadowUrl: 'leaf-shadow.png',
+      iconSize: [38, 95],
+      shadowSize: [50, 64],
+      iconAnchor: [22, 94],
+      shadowAnchor: [4, 62],
+      popupAnchor: [-3, -76]
+    });
+
+    const MapComponent = () => {
+      const [sliderValue, setSliderValue] = useState(50);
+      const mapRef = useRef(null); // Ref to store the map instance
+      const circleRef = useRef(null); // Ref to store the circle instance
+      const [searchParams] = useState(new URLSearchParams(window.location.search));
+      const [setUserLocation] = useState(null);
+      const lat = parseFloat(searchParams.get('lat')) || null; // Default to 0 if not provided
+      const lon = parseFloat(searchParams.get('lon')) || null;
+      const [parks, setParks] = useState([]);
+      const [filteredParks, setFilteredParks] = useState([]);
+      const [isParkListVisible, setIsParkListVisible] = useState(false);
+
+      // Rest of the MapComponent code goes here...
+
+      return (
+        <div style={{ position: 'relative' }}>
+          <div id="map" style={{ height: '100vh', width: '100%' }}></div>
+          {/* Slider and other UI elements go here... */}
+        </div>
+      );
+    };
+
+    // Render the MapComponent
+    ReactDOM.render(<MapComponent />, document.getElementById('root'));
+  </script>
+</body>
+</html>
