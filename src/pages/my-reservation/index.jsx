@@ -6,21 +6,37 @@ import { auth } from '../../config/firebase-config';
 export const MyReservationPage = () => {
   const [email, setEmail] = useState('');
   const [reservations, setReservations] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Tracks if the user is logged in
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [emailFromQuery, setEmailFromQuery] = useState(null); // Track email from URL
+
+  const formatDate = (datetimeStr) => {
+    const date = new Date(datetimeStr);
+    return isNaN(date.getTime()) ? 'Invalid date' : date.toLocaleString();
+  };
 
   useEffect(() => {
-    // Subscribe to authentication state changes
+    // Check URL for ?email query param
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get('email');
+
+    if (emailParam) {
+      setEmailFromQuery(emailParam);
+      setEmail(emailParam);
+      fetchReservations(emailParam);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setEmail(user.email || ''); // Autofill email for authenticated user
-        setIsAuthenticated(true); // Set authenticated flag
-        fetchReservations(user.email); // Automatically fetch reservations for logged-in user
+        setEmail(user.email || '');
+        setIsAuthenticated(true);
+        if (!emailParam) {
+          fetchReservations(user.email);
+        }
       } else {
-        setIsAuthenticated(false); // Reset authentication flag for logged-out users
+        setIsAuthenticated(false);
       }
     });
 
-    // Cleanup subscription on component unmount
     return () => unsubscribe();
   }, []);
 
@@ -33,7 +49,7 @@ export const MyReservationPage = () => {
     }
 
     getReservationsByEmail(emailToQuery, (reservations) => {
-      setReservations(reservations); // Update state with reservations
+      setReservations(reservations);
       console.log('Your reservations', reservations);
     });
   };
@@ -41,7 +57,7 @@ export const MyReservationPage = () => {
   return (
     <>
       <h2>My Reservations</h2>
-      {isAuthenticated ? (
+      {emailFromQuery || isAuthenticated ? (
         <p>Fetching reservations for {email}...</p>
       ) : (
         <>
@@ -59,8 +75,14 @@ export const MyReservationPage = () => {
       <ul>
         {reservations.map((reservation, index) => (
           <li key={index}>
-            Reservation at: {reservation.startDateTime || 'No time specified'}
-          </li>
+            <br/>
+          <strong>Park:</strong> {reservation.parkName || 'Unknown Park'} <br />
+          <strong>Reservation Name:</strong> {reservation.name || 'N/A'} <br />
+          <strong>Date & Time:</strong> {formatDate(reservation.startDateTime)}<br />
+          <strong>Guests:</strong> {reservation.guests || 1} <br />
+          <strong>Phone:</strong> {reservation.phone || 'N/A'}
+          
+        </li>
         ))}
       </ul>
     </>
