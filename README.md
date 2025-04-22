@@ -9,127 +9,97 @@ npm start
 
 
 ![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
-# Codebase Documentation Summary
+MapComponent.js
 
-## MapComponent.js
-**Core Function**: Main map interface with Leaflet integration  
-**Key Features**:
-- Dynamic radius filtering (1-50 mile range)
-- Park status visualization (open/half-open/closed icons)
-- Spotlight mode for focused park viewing
-- User location tracking
-- Sliding park list panel
-- Reservation/reporting system integration
+Main Purpose: Interactive map interface using Leaflet.
+🔑 Key Features:
 
-**Critical Dependencies**:
-- `leaflet` + `geolib` for spatial operations
-- Firebase Realtime Database via `getObjects`
-- React Router for URL params
+    Radius filtering (1–50 miles)
 
-# Feature Explanations
+    Park status indicators (open / half-open / closed)
 
-## 1. Spotlight Mode
-**Purpose**: Focused park viewing experience  
-**User Interaction**:
-- Triggered by ★ button in park popups
-- Click "Exit Spotlight" to return to normal view
+    Spotlight mode for focused viewing
 
-**Technical Workflow**:
-1. Clears all regular markers
-2. Displays highlighted marker with spotlight icon (🌟)
-3. Shows expanded park details permanently
-4. Maintains user location marker
-5. Updates filtered parks list to single entry
+    User geolocation support
 
-**Key Benefits**:
-- Eliminates visual clutter
-- Quick access to reservation/report actions
-- Persistent park information display
+    Sliding panel with park list
 
----
+    Integrated reservation and report functionality
 
-## 2. Make a Reservation
-**User Flow**:
-1. Click "Go to Reservation" in:
-   - Park popup (regular/spotlight modes)
-   - Sliding panel park list
-2. Redirects to `/reservation` route with parameters:
-   - `parkId`: Database identifier
-   - `parkName`: Human-readable name
-   - `parkLat/parkLong`: Coordinates (reporting only)
+📦 Dependencies:
 
-**System Integration**:
-- Reservation data stored under `reservations` node
-- Email-based retrieval via `getReservationsByEmail()`
-- Capacity tracking through `updateCurrentCapacity()`
+    leaflet and geolib for spatial ops
 
-**Capacity Enforcement**:
-- Automatic guest count adjustments
-- Nightly reset to random 1-5 via `ZeroOutCapacityAndClose()`
+    Firebase Realtime DB via getObjects
 
----
+    React Router for dynamic routing
 
-## 3. Update Park Status
-**Two-Tier System**:
+✨ Feature Explanations
+1. Spotlight Mode
 
-### A. Administrative Control
-**ParkToggleButton Features**:
-- Global open/close toggle
-- Bulk update all parks
-- Visual feedback (green/red button)
-  
-**Database Impact**:
-```javascript
-// Example update payload
-{
-  "parkId1/isOpen": true,
-  "parkId2/isOpen": true,
-  // ... all parks
-}
----
+Purpose: Highlight a single park for better focus.
+👤 User Interaction:
 
-## ParkToggleButton.js
-**Core Function**: Administrative park status control  
-**Key Features**:
-- Bulk toggle for all park `isOpen` states
-- Visual feedback (green/red button states)
-- Firebase atomic updates
-- Top-right positioning overlay
+    Click ★ in a park popup
 
-**Data Impact**: Directly modifies `objects/[park]/isOpen` in DB
+    Exit via "Exit Spotlight" button
 
----
+⚙️ Workflow:
 
-## firebase-utils.js
-**Core Functions**: Database operations layer
+    Clears all standard markers
 
-### Key Utilities:
-1. **Status Management**:
-   - `updateParkStatus()`: Single park open/close
-   - `setAllParksOpen()`: Mass open parks
+    Shows spotlight icon (🌟)
 
-2. **Capacity Control**:
-   - `updateCurrentCapacity()`: Adjust guest counts
-   - `ZeroOutCapacityAndClose()`: Nightly reset to random 1-5
+    Locks expanded park detail
 
-3. **Data Fetching**:
-   - `getObjects()`: Real-time park data stream
-   - `getReservationsByEmail()`: User-specific bookings
+    Keeps user location marker active
 
-**Database Structure**:
-```json
-{
-  "objects": {
-    "parkId": {
-      "isOpen": true,
-      "currentCapacity": 0,
-      "coordinates": {"lat": 30.43, "lng": -84.28}
-    }
-  },
-  "reservations": {
-    "Date": {
-      "email": "user@domain.com",
-      "parkId": "parkId"
-    }
-  }
-}
+    Filters park list to that single park
+
+✅ Benefits:
+
+    Reduces visual clutter
+
+    Simplifies park interactions
+
+    Displays persistent, detailed info
+
+2. Make a Reservation
+🧭 Flow:
+
+    Click “Go to Reservation” in:
+
+        Park popup
+
+        Sliding panel
+
+    Redirects to /reservation with:
+
+        parkId
+
+        parkName
+
+        parkLat, parkLong (for reporting)
+
+🔄 Backend:
+
+    Saves data under reservations
+
+    Retrieves by email using getReservationsByEmail()
+
+    Tracks capacity with updateCurrentCapacity()
+
+📊 Capacity Rules:
+
+    Auto guest count adjustment
+
+    Nightly reset via ZeroOutCapacityAndClose() (random 1–5)
+
+3. Update Park Status
+🔐 Admin Control (via ParkToggleButton)
+
+    Toggle all parks open/closed
+
+    Color indicators (green/red)
+
+    Bulk Firebase updates
