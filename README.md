@@ -13,6 +13,9 @@ npm start
 
 ![image](https://github.com/user-attachments/assets/02b3220c-2dba-4e1a-a125-4fbd142fdb72)
 
+![image](https://github.com/user-attachments/assets/f67541eb-adc9-4689-b6f4-99c3cf36ac0d)
+
+
 
 # 🏞️ State Park App – Full Documentation
 
