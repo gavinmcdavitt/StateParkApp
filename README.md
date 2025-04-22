@@ -9,97 +9,139 @@ npm start
 
 
 ![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
-MapComponent.js
+# 🏞️ State Park App – Full Documentation
 
-Main Purpose: Interactive map interface using Leaflet.
-🔑 Key Features:
+## 📁 App Routing Overview
 
-    Radius filtering (1–50 miles)
+This application uses **React Router v6** with `BrowserRouter` for SPA-style navigation.
 
-    Park status indicators (open / half-open / closed)
+| Route Path         | Component              | Description                                 |
+|--------------------|------------------------|---------------------------------------------|
+| `/` or `/Home`     | `Home`                 | Main landing page                           |
+| `/About-Us`        | `AboutUs`              | About the project                           |
+| `/Sign-Up`         | `AuthPage`             | Sign up / Login portal                      |
+| `/Map`             | `MapComponent`         | Interactive Leaflet-based park map          |
+| `/Reservation`     | `ReservationForm`      | Park reservation form                       |
+| `/My-Reservation`  | `MyReservationPage`    | User's reservation management               |
+| `/report`          | `ParkStatusReportForm` | Submit park status updates                  |
 
-    Spotlight mode for focused viewing
+---
 
-    User geolocation support
+## 🗺️ MapComponent Summary
 
-    Sliding panel with park list
+### 🔧 Features
+- **Leaflet-based map** with OpenStreetMap tiles
+- Auto-locate user or fallback to URL lat/lon
+- Dynamic radius filter (0–50 miles)
+- Park icons by status: open, halfway, or closed
+- **Spotlight Mode**: focus on one park with 🌟 icon
+- Sidebar list of nearby parks with quick actions
 
-    Integrated reservation and report functionality
+### 🔌 Dependencies
+- `leaflet`, `geolib`, `react-router-dom`
+- Firebase Realtime DB (`getObjects`)
 
-📦 Dependencies:
+### 🧠 Key State
+- `parks`, `filteredParks`, `userLocation`
+- `isSpotlightMode`, `spotlightedPark`
 
-    leaflet and geolib for spatial ops
+### 🛠️ Functions
+- `initializeAllMarkers()`, `toggleSpotlight()`
+- `clearAllMarkers()`, `filterParksWithinRadius()`
 
-    Firebase Realtime DB via getObjects
+---
 
-    React Router for dynamic routing
+## 🔐 Authentication System
 
-✨ Feature Explanations
-1. Spotlight Mode
+### 🔄 AuthPage includes:
+1. **EmailSignIn**
+   - Sign-up/Login via Firebase email+password
+   - Saves to `/users/{uid}` in DB
+   - Error messages for weak or duplicate accounts
 
-Purpose: Highlight a single park for better focus.
-👤 User Interaction:
+2. **GoogleSignIn**
+   - Firebase popup OAuth
+   - Saves `email`, `uid`, `role` to DB
 
-    Click ★ in a park popup
+3. **LogoutButton**
+   - Calls `signOut()` and redirects home
 
-    Exit via "Exit Spotlight" button
+4. **ErrorPopup**
+   - Displays contextual error messages
 
-⚙️ Workflow:
+### 🧱 Firebase Auth Methods
+- `createUserWithEmailAndPassword`
+- `signInWithEmailAndPassword`
+- `signInWithPopup`, `signOut`
+- `setPersistence`, `set(ref(db, path))`
 
-    Clears all standard markers
+---
 
-    Shows spotlight icon (🌟)
+## 🧰 Firebase Utilities
 
-    Locks expanded park detail
+### 🔧 Core Functions
+- `ensureBooleanField()`: sets all `isOpen` to boolean
+- `addCapacityToAllObjects()`: random capacity (1–25)
+- `addObj()`: add park data to Firebase
 
-    Keeps user location marker active
+### 🏡 Homer Component
+- React form to submit park data to DB
+- Tracks form state with `useState`
+- Required fields: ID, Name, County, Size, Year, Lat/Lng, etc.
 
-    Filters park list to that single park
+---
 
-✅ Benefits:
+## 📆 MyReservationPage Summary
 
-    Reduces visual clutter
+- Fetches reservations via:
+  - Authenticated user email
+  - URL param (`?email=`)
+  - Manual entry
+- Displays:
+  - Park name, reservation name, date/time, guest count, phone
+- Conditional UI: depends on auth state
+- Redirects and error handles missing/invalid data
 
-    Simplifies park interactions
+---
 
-    Displays persistent, detailed info
+## 📋 ReservationForm Summary
 
-2. Make a Reservation
-🧭 Flow:
+- Auto-fills:
+  - `parkId`, `parkName` from URL
+  - `email` from user session
+- Stores under `/reservations/{YYYY-MM-DD}`
+- Calls `updateCurrentCapacity()` on submit
+- Validates guest count and date
+- Redirects to `/my-reservations?email=...`
 
-    Click “Go to Reservation” in:
+---
 
-        Park popup
+## 🛑 ParkStatusReportForm Summary
 
-        Sliding panel
+- Fields:
+  - Park name, open/closed checkbox, datetime, email
+- Auto-fills from:
+  - URL params
+  - Authenticated user
+- Saves to `/reports/{YYYY-MM-DD}`
+- Calls `updateParkStatus(parkName, status)`
+- Redirects to `/map` on success
 
-    Redirects to /reservation with:
+---
 
-        parkId
+## ✅ Usage Notes
+- Ensure Firebase is configured correctly (API keys, DB rules)
+- Most state managed with `useState` and `useEffect`
+- Minimal external CSS (Bootstrap + App.css)
 
-        parkName
+---
 
-        parkLat, parkLong (for reporting)
+## 📦 Dependencies Overview
 
-🔄 Backend:
+- `react`, `react-router-dom`, `leaflet`, `geolib`
+- `firebase` (auth + realtime database)
+- Bootstrap for layout/styling
 
-    Saves data under reservations
+---
 
-    Retrieves by email using getReservationsByEmail()
-
-    Tracks capacity with updateCurrentCapacity()
-
-📊 Capacity Rules:
-
-    Auto guest count adjustment
-
-    Nightly reset via ZeroOutCapacityAndClose() (random 1–5)
-
-3. Update Park Status
-🔐 Admin Control (via ParkToggleButton)
-
-    Toggle all parks open/closed
-
-    Color indicators (green/red)
-
-    Bulk Firebase updates
+> ✍️ _Last updated: April 2025_
