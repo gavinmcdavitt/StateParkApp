@@ -9,76 +9,127 @@ npm start
 
 
 ![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
+# Codebase Documentation Summary
 
+## MapComponent.js
+**Core Function**: Main map interface with Leaflet integration  
+**Key Features**:
+- Dynamic radius filtering (1-50 mile range)
+- Park status visualization (open/half-open/closed icons)
+- Spotlight mode for focused park viewing
+- User location tracking
+- Sliding park list panel
+- Reservation/reporting system integration
 
-### Average React Explanation
-# Getting Started with Create React App
+**Critical Dependencies**:
+- `leaflet` + `geolib` for spatial operations
+- Firebase Realtime Database via `getObjects`
+- React Router for URL params
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Feature Explanations
 
-## Available Scripts
+## 1. Spotlight Mode
+**Purpose**: Focused park viewing experience  
+**User Interaction**:
+- Triggered by ★ button in park popups
+- Click "Exit Spotlight" to return to normal view
 
-In the project directory, you can run:
+**Technical Workflow**:
+1. Clears all regular markers
+2. Displays highlighted marker with spotlight icon (🌟)
+3. Shows expanded park details permanently
+4. Maintains user location marker
+5. Updates filtered parks list to single entry
 
-### `npm start`
+**Key Benefits**:
+- Eliminates visual clutter
+- Quick access to reservation/report actions
+- Persistent park information display
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 2. Make a Reservation
+**User Flow**:
+1. Click "Go to Reservation" in:
+   - Park popup (regular/spotlight modes)
+   - Sliding panel park list
+2. Redirects to `/reservation` route with parameters:
+   - `parkId`: Database identifier
+   - `parkName`: Human-readable name
+   - `parkLat/parkLong`: Coordinates (reporting only)
 
-### `npm test`
+**System Integration**:
+- Reservation data stored under `reservations` node
+- Email-based retrieval via `getReservationsByEmail()`
+- Capacity tracking through `updateCurrentCapacity()`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Capacity Enforcement**:
+- Automatic guest count adjustments
+- Nightly reset to random 1-5 via `ZeroOutCapacityAndClose()`
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 3. Update Park Status
+**Two-Tier System**:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### A. Administrative Control
+**ParkToggleButton Features**:
+- Global open/close toggle
+- Bulk update all parks
+- Visual feedback (green/red button)
+  
+**Database Impact**:
+```javascript
+// Example update payload
+{
+  "parkId1/isOpen": true,
+  "parkId2/isOpen": true,
+  // ... all parks
+}
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ParkToggleButton.js
+**Core Function**: Administrative park status control  
+**Key Features**:
+- Bulk toggle for all park `isOpen` states
+- Visual feedback (green/red button states)
+- Firebase atomic updates
+- Top-right positioning overlay
 
-### `npm run eject`
+**Data Impact**: Directly modifies `objects/[park]/isOpen` in DB
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## firebase-utils.js
+**Core Functions**: Database operations layer
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Key Utilities:
+1. **Status Management**:
+   - `updateParkStatus()`: Single park open/close
+   - `setAllParksOpen()`: Mass open parks
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. **Capacity Control**:
+   - `updateCurrentCapacity()`: Adjust guest counts
+   - `ZeroOutCapacityAndClose()`: Nightly reset to random 1-5
 
-## Learn More
+3. **Data Fetching**:
+   - `getObjects()`: Real-time park data stream
+   - `getReservationsByEmail()`: User-specific bookings
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Database Structure**:
+```json
+{
+  "objects": {
+    "parkId": {
+      "isOpen": true,
+      "currentCapacity": 0,
+      "coordinates": {"lat": 30.43, "lng": -84.28}
+    }
+  },
+  "reservations": {
+    "Date": {
+      "email": "user@domain.com",
+      "parkId": "parkId"
+    }
+  }
+}
