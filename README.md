@@ -7,8 +7,13 @@ npm install
 npm start
 ```
 
+![image](https://github.com/user-attachments/assets/fa19f353-3171-4c33-aa8d-25b7a1772178)
 
-![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
+![image](https://github.com/user-attachments/assets/b07d02c9-6a8b-4ba7-b260-2da8228021d7)
+
+![image](https://github.com/user-attachments/assets/02b3220c-2dba-4e1a-a125-4fbd142fdb72)
+
+
 # 🏞️ State Park App – Full Documentation
 
 ## 📁 App Routing Overview
