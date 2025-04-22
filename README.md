@@ -7,78 +7,151 @@ npm install
 npm start
 ```
 
+![image](https://github.com/user-attachments/assets/fa19f353-3171-4c33-aa8d-25b7a1772178)
 
-![alt text](https://github.com/user-attachments/assets/ef4f6b1d-6efe-41dd-9324-e3c4981c4083)
+![image](https://github.com/user-attachments/assets/b07d02c9-6a8b-4ba7-b260-2da8228021d7)
+
+![image](https://github.com/user-attachments/assets/02b3220c-2dba-4e1a-a125-4fbd142fdb72)
+
+![image](https://github.com/user-attachments/assets/f67541eb-adc9-4689-b6f4-99c3cf36ac0d)
 
 
-### Average React Explanation
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🏞️ State Park App – Full Documentation
 
-## Available Scripts
+## 📁 App Routing Overview
+![image](https://github.com/user-attachments/assets/06bf68fc-5bb4-4206-b6bf-6eaa93591995)
 
-In the project directory, you can run:
+This application uses **React Router v6** with `BrowserRouter` for SPA-style navigation.
 
-### `npm start`
+| Route Path         | Component              | Description                                 |
+|--------------------|------------------------|---------------------------------------------|
+| `/` or `/Home`     | `Home`                 | Main landing page                           |
+| `/About-Us`        | `AboutUs`              | About the project                           |
+| `/Sign-Up`         | `AuthPage`             | Sign up / Login portal                      |
+| `/Map`             | `MapComponent`         | Interactive Leaflet-based park map          |
+| `/Reservation`     | `ReservationForm`      | Park reservation form                       |
+| `/My-Reservation`  | `MyReservationPage`    | User's reservation management               |
+| `/report`          | `ParkStatusReportForm` | Submit park status updates                  |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🗺️ MapComponent Summary
+![image](https://github.com/user-attachments/assets/568a869f-2f10-4698-837b-c40f66194ac1)
 
-### `npm test`
+### 🔧 Features
+- **Leaflet-based map** with OpenStreetMap tiles
+- Auto-locate user or fallback to URL lat/lon
+- Dynamic radius filter (0–50 miles)
+- Park icons by status: open, halfway, or closed
+- **Spotlight Mode**: focus on one park with 🌟 icon
+- Sidebar list of nearby parks with quick actions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🔌 Dependencies
+- `leaflet`, `geolib`, `react-router-dom`
+- Firebase Realtime DB (`getObjects`)
 
-### `npm run build`
+### 🧠 Key State
+- `parks`, `filteredParks`, `userLocation`
+- `isSpotlightMode`, `spotlightedPark`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🛠️ Functions
+- `initializeAllMarkers()`, `toggleSpotlight()`
+- `clearAllMarkers()`, `filterParksWithinRadius()`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🔐 Authentication System
 
-### `npm run eject`
+### 🔄 AuthPage includes:
+1. **EmailSignIn**
+   - Sign-up/Login via Firebase email+password
+   - Saves to `/users/{uid}` in DB
+   - Error messages for weak or duplicate accounts
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **GoogleSignIn**
+   - Firebase popup OAuth
+   - Saves `email`, `uid`, `role` to DB
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **LogoutButton**
+   - Calls `signOut()` and redirects home
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **ErrorPopup**
+   - Displays contextual error messages
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🧱 Firebase Auth Methods
+- `createUserWithEmailAndPassword`
+- `signInWithEmailAndPassword`
+- `signInWithPopup`, `signOut`
+- `setPersistence`, `set(ref(db, path))`
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🧰 Firebase Utilities
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 🔧 Core Functions
+- `ensureBooleanField()`: sets all `isOpen` to boolean
+- `addCapacityToAllObjects()`: random capacity (1–25)
+- `addObj()`: add park data to Firebase
 
-### Code Splitting
+### 🏡 Homer Component
+- React form to submit park data to DB
+- Tracks form state with `useState`
+- Required fields: ID, Name, County, Size, Year, Lat/Lng, etc.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 📆 MyReservationPage Summary
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Fetches reservations via:
+  - Authenticated user email
+  - URL param (`?email=`)
+  - Manual entry
+- Displays:
+  - Park name, reservation name, date/time, guest count, phone
+- Conditional UI: depends on auth state
+- Redirects and error handles missing/invalid data
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📋 ReservationForm Summary
 
-### Advanced Configuration
+- Auto-fills:
+  - `parkId`, `parkName` from URL
+  - `email` from user session
+- Stores under `/reservations/{YYYY-MM-DD}`
+- Calls `updateCurrentCapacity()` on submit
+- Validates guest count and date
+- Redirects to `/my-reservations?email=...`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 🛑 ParkStatusReportForm Summary
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Fields:
+  - Park name, open/closed checkbox, datetime, email
+- Auto-fills from:
+  - URL params
+  - Authenticated user
+- Saves to `/reports/{YYYY-MM-DD}`
+- Calls `updateParkStatus(parkName, status)`
+- Redirects to `/map` on success
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## ✅ Usage Notes
+- Ensure Firebase is configured correctly (API keys, DB rules)
+- Most state managed with `useState` and `useEffect`
+- Minimal external CSS (Bootstrap + App.css)
+
+---
+
+## 📦 Dependencies Overview
+
+- `react`, `react-router-dom`, `leaflet`, `geolib`
+- `firebase` (auth + realtime database)
+- Bootstrap for layout/styling
+
+---
+
+> ✍️ _Last updated: April 2025_
