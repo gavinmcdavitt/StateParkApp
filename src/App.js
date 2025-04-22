@@ -8,7 +8,7 @@ import { MapComponent } from './components/MapComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReservationForm } from './pages/reservation';
 import { MyReservationPage } from './pages/my-reservation';
-
+import ParkStatusReportForm from './pages/updateParkStatus';
 function App() {
   return (
     <div className="App">
@@ -21,6 +21,7 @@ function App() {
           <Route path="/Map" exact element={<MapComponent />} />
           <Route path="/Reservation" exact element={<ReservationForm />} />
           <Route path="/My-Reservation" exact element={<MyReservationPage />} />
+          <Route path="/report" element={<ParkStatusReportForm />} />
         </Routes>
       </Router>
     </div>

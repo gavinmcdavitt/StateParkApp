@@ -4,47 +4,55 @@ import { useLocation } from 'react-router-dom';
 import { ref, set } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../config/firebase-config';
-import { updateCurrentCapacity } from '../../components/readDatabase';
+import { updateCurrentCapacity, updateParkStatus } from '../../components/readDatabase';
+
 import './index.css';
 
-export const ReservationForm = () => {
+export const ParkStatusReportForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        phone: '',
         startDateTime: '',
-        guests: 1,
+        openOrClosed: true, // Default to 'open' (true)
         parkId: '',
-        parkName:'',
+        parkName: '',
+        formattedDateTime: '', // For storing formatted current date time
     });
 
     const location = useLocation();
 
     useEffect(() => {
         const queryString = location.search.substring(1); // Remove the leading '?'
-        const params = queryString.split('?'); // Split at the first '?'
+        const params = queryString.split('&'); // Split by '&' to get each parameter
     
         let parkId = null;
         let parkName = null;
     
-        // Extract `parkId` and `parkName` manually
+        // Extract `parkId` and `parkName` manually (exclude parkLat and parkLong)
         params.forEach(param => {
-            if (param.startsWith('parkId=')) {
-                parkId = param.split('=')[1];
-            } else if (param.startsWith('parkName=')) {
-                parkName = decodeURIComponent(param.split('=')[1]);
+            const [key, value] = param.split('='); // Split each param into key-value pairs
+            if (key === 'parkId') {
+                parkId = value;
+            } else if (key === 'parkName') {
+                parkName = decodeURIComponent(value); // Decode the parameter value
             }
         });
-    
+
+        // Get current date and time in the required format for datetime-local
+        const currentDateTime = new Date();
+        const formattedDateTime = currentDateTime.toLocaleString(); // Formatted for display
+        const dateTimeForInput = currentDateTime.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+        
         // Update formData with the extracted values
         setFormData((prevFormData) => ({
             ...prevFormData,
             ...(parkId && { parkId }),
             ...(parkName && { parkName }),
+            startDateTime: dateTimeForInput, // Set the start date and time automatically
+            formattedDateTime, // Store the formatted date-time for display
         }));
-     
     
-     const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setFormData((prevFormData) => ({
                     ...prevFormData,
@@ -52,11 +60,11 @@ export const ReservationForm = () => {
                 }));
             }
         });
-
+    
         // Cleanup subscription when component unmounts
         return () => unsubscribe();
     }, [location]);
-    
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -68,25 +76,27 @@ export const ReservationForm = () => {
             const dateKey = formData.startDateTime.split('T')[0]; // Extract the date part of the startDateTime (e.g., '2024-11-25')
             const currentDateTime = new Date();
 
-        // Check if the reservation date is in the past
-        if (dateKey < currentDateTime) {
-            throw new Error('The reservation date has already passed.');
-        } 
-            const reservationRef = ref(database, `reservations/${dateKey}`);
+            // Check if the reservation date is in the past
+            if (new Date(formData.startDateTime) < currentDateTime) {
+                throw new Error('The reservation date has already passed.');
+            }
 
-            // Save the reservation under the date
-            await set(reservationRef, formData);
+            // Create a new object excluding the latitude and longitude
+            const { parkLat, parkLong, ...dataToSubmit } = formData;
 
-            alert('Reservation saved successfully!');
-            console.log('Saved reservation:', formData);
-            console.log(formData.parkId);
-            
-            updateCurrentCapacity(formData.parkName, formData.guests);
-            window.location.href = '/my-reservation?formData.email';
+            const reservationRef = ref(database, `reports/${dateKey}`);
+
+            // Save the report under the date
+            await set(reservationRef, dataToSubmit);
+
+            alert('Report saved successfully!');
+            console.log('Saved report:', dataToSubmit);
+            await updateParkStatus(formData.parkName, formData.openOrClosed);
+            window.location.href = `/map`;
 
         } catch (error) {
-            console.error('Error saving reservation:', error);
-            alert('Failed to save reservation.');
+            console.error('Error saving report:', error);
+            alert('Failed to save report.');
         }
     };
 
@@ -102,6 +112,7 @@ export const ReservationForm = () => {
                     readOnly
                 />
             </div>
+           
             <div>
                 <label>Full Name:</label>
                 <input
@@ -125,17 +136,7 @@ export const ReservationForm = () => {
             </div>
 
             <div>
-                <label>Phone:</label>
-                <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                />
-            </div>
-
-            <div>
-                <label>Start Date and Time:</label>
+                <label>Date and Time:</label>
                 <input
                     type="datetime-local"
                     name="startDateTime"
@@ -146,25 +147,22 @@ export const ReservationForm = () => {
             </div>
 
             <div>
-                <label>Number of Guests:</label>
+                <label>Is the Park Open?</label>
                 <input
-                    type="number"
-                    name="guests"
-                    value={formData.guests}
-                    onChange={handleInputChange}
-                    min="1"
-                    required
+                    type="checkbox"
+                    name="openOrClosed"
+                    checked={formData.openOrClosed}
+                    onChange={(e) => setFormData({ ...formData, openOrClosed: e.target.checked })}
                 />
+                <label>{formData.openOrClosed ? "Open" : "Closed"}</label>
             </div>
 
-            <button type="submit" style={{ marginBottom: '10px' }}>Submit Reservation</button>
+            <button type="submit" style={{ marginBottom: '10px' }}>Submit Report</button>
             
-            <button type="submit" onClick={() => window.location.href = '/Home'}>Cancel</button>
-          
+            <button type="button" onClick={() => window.location.href = '/Home'}>Cancel</button>
+
         </form>
-        
     );
 };
 
-export default ReservationForm;
-
+export default ParkStatusReportForm;

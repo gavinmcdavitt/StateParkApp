@@ -1,7 +1,34 @@
 import { ref, onValue, update, get, } from "firebase/database";
 import { database } from '../config/firebase-config'; // Adjust the path as needed
 
-// Function to get objects with longitude and latitude
+export const updateParkStatus = async (parkName, isOpen) => {
+    try {
+        if (!parkName) {
+            console.error("No park ID provided.");
+            return;
+        }
+        
+        const parkRef = ref(database, `objects/${parkName}`);
+        console.log(`Updating park status at path: objects/${parkName}`); // Debug
+        
+        const snapshot = await get(parkRef);
+        
+        if (snapshot.exists()) {
+            const parkData = snapshot.val();
+            console.log("Park data:", parkData); // Debug
+
+            // Update the park's isOpen status
+            await update(parkRef, { isOpen });
+
+            console.log(`Successfully updated isOpen to ${isOpen}`);
+        } else {
+            console.error("Park not found with the given Name:", parkName);
+        }
+    } catch (error) {
+        console.error("Error updating park status (isOpen):", error);
+    }
+};
+
 
 export const updateCurrentCapacity = async (parkName, numOfGuests) => {
     try {
@@ -63,8 +90,28 @@ export const ZeroOutCapacityAndClose = (database, callback) => {
 };
 
 
+export const setAllParksOpen = async () => {
+    const objectsRef = ref(database, 'objects');
+    try {
+        const snapshot = await get(objectsRef);
+        if (snapshot.exists()) {
+            const updates = {};
+            snapshot.forEach(child => {
+                const parkKey = child.key;
+                updates[`${parkKey}/isOpen`] = true;
+            });
+            await update(objectsRef, updates);
+            console.log('All parks set to open.');
+        } else {
+            console.log('No parks found in the database.');
+        }
+    } catch (error) {
+        console.error('Error setting all parks to open:', error);
+    }
+};
+
+
 export const getObjects = (callback) => {
-    
     //ZeroOutCapacityAndClose();
     const objectsRef = ref(database, 'objects');
     onValue(objectsRef, (snapshot) => {
@@ -74,6 +121,7 @@ export const getObjects = (callback) => {
                 ...obj,
                 longitude: obj.longitude || null,
                 latitude: obj.latitude || null,
+                isOpen: obj.isOpen !== undefined ? obj.isOpen : true // Default to false if undefined
                 }));
             callback(objectsArray);
         }
