@@ -85,6 +85,22 @@ export const MyReservationPage = () => {
         </li>
         ))}
       </ul>
+      <button 
+    onClick={() => window.location.href = '/home'} 
+    style={{
+        padding: '5px 10px', 
+        backgroundColor: '#007bff', 
+        color: 'white', 
+        border: 'none', 
+        borderRadius: '4px', 
+        cursor: 'pointer'
+    }}
+>
+    Home
+</button>
+
+    
     </>
+    
   );
 };

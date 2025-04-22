@@ -82,7 +82,7 @@ export const ReservationForm = () => {
             console.log(formData.parkId);
             
             updateCurrentCapacity(formData.parkName, formData.guests);
-            window.location.href = '/my-reservation?formData.email';
+            window.location.href = `/my-reservation?email=${formData.email}`;
 
         } catch (error) {
             console.error('Error saving reservation:', error);
