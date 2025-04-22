@@ -12,6 +12,7 @@ npm start
 # 🏞️ State Park App – Full Documentation
 
 ## 📁 App Routing Overview
+![image](https://github.com/user-attachments/assets/06bf68fc-5bb4-4206-b6bf-6eaa93591995)
 
 This application uses **React Router v6** with `BrowserRouter` for SPA-style navigation.
 
@@ -28,6 +29,7 @@ This application uses **React Router v6** with `BrowserRouter` for SPA-style nav
 ---
 
 ## 🗺️ MapComponent Summary
+![image](https://github.com/user-attachments/assets/568a869f-2f10-4698-837b-c40f66194ac1)
 
 ### 🔧 Features
 - **Leaflet-based map** with OpenStreetMap tiles
